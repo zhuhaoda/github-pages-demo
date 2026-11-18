@@ -1,4 +1,4 @@
-# Hello, Pages.
+# Dalio
 
 一个可以直接发布到 GitHub Pages 的中文示范网站。包含手机适配、名字问候、四种配色；不需要构建、安装依赖、API 密钥或后端。
 
@@ -20,7 +20,7 @@ python3 -u -m http.server 0 --bind 127.0.0.1
 4. 在 **Build and deployment** 下，将 **Source** 设为 **Deploy from a branch**；Branch 选 `main`，文件夹选 `/(root)`，点击 **Save**。
 5. 等待 GitHub 发布。完成后 Pages 设置中会出现 **Visit site**。官方说明发布可能需要最多约 10 分钟。
 
-地址通常为 `https://你的用户名.github.io/github-pages-demo/`。本仓库配置 Pages 后的网址为 [Hello, Pages.](https://zhuhaoda.github.io/github-pages-demo/)。
+地址通常为 `https://你的用户名.github.io/github-pages-demo/`。本仓库的网站为 [Dalio](https://zhuhaoda.github.io/github-pages-demo/)。
 
 ## 是否收费？
 
