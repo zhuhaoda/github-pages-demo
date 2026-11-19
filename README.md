@@ -18,7 +18,9 @@ The site's original published text, photographs, figures, captions, and PDF atta
 - Theme and client-only filtering: `assets/theme-init.js` and `assets/site.js`
 - Self-hosted Geist font and its SIL Open Font License: `assets/fonts/`
 
-The archive distinguishes three verified publications, two engineering projects, research notes, and personal essays. DALIO's published paper and the original design notes have separate entries. Publication titles, authors, venues, and DOIs were checked against publisher-deposited Crossref records and the available paper.
+The archive distinguishes four verified publications, research and engineering projects, research notes, and personal essays. FAST-LIVO-RS is listed as a published RA-L 2026 paper with its official DOI and a clean accepted-author PDF. DALIO's published paper and the original design notes have separate entries. Publication titles, authors, venues, and DOIs were checked against publisher-deposited Crossref records and the available paper; shared first authorship for the data-driven CDPR paper follows the owner's explicit confirmation.
+
+Selected Work contains FAST-LIVO-RS, DALIO, and the multi-LiDAR odometry project, in that order. Social links use the owner's Google Scholar, LinkedIn, and GitHub profiles. The photo gallery preserves natural image ratios in a responsive multi-column layout, and the experience timeline uses explicit year/content columns with a stacked mobile layout.
 
 All 16 original articles and their inline images are retained. The old About/Research/Writing pages remain as readable legacy archives. Old WordPress upload paths are also preserved, including the DALIO PDF URL used by external citations.
 

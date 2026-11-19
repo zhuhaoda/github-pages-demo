@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://haodazhu.com/2026/04/10/multi-lidar-odometry-for-bumpy-environments/</loc></url>
+<url><loc>https://haodazhu.com/projects/multi-lidar-odometry/</loc></url>
 <url><loc>https://haodazhu.com/writing/multi-lidar-odometry/</loc></url>
 <url><loc>https://haodazhu.com/2026/04/10/rs-livo/</loc></url>
 <url><loc>https://haodazhu.com/writing/rs-livo/</loc></url>
@@ -29,6 +30,7 @@
 <url><loc>https://haodazhu.com/2024/01/06/dynamic-control-of-a-cable-driven-parallel-robot-allowing-collisions-via-sim-to-real-reinforcement-learning/</loc></url>
 <url><loc>https://haodazhu.com/2024/01/03/hello-world/</loc></url>
 <url><loc>https://haodazhu.com/writing/hello-world/</loc></url>
+<url><loc>https://haodazhu.com/publication/fast-livo-rs/</loc></url>
 <url><loc>https://haodazhu.com/publication/dalio/</loc></url>
 <url><loc>https://haodazhu.com/publication/data-driven-cdpr/</loc></url>
 <url><loc>https://haodazhu.com/publication/sim-to-real-cdpr/</loc></url>
