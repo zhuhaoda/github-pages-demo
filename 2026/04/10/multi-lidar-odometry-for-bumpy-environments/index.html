@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="多雷达系统，在颠簸环境下，有什么问题： dalio method problem:imu不准导致去畸变不准，导致估计不准。 single lidar method like point lio:too linear，计算量大 multi lidar:多个雷达之间的外参并不long time consistent，在颠簸环境内尤其严重 所以： 我们用adaptive state ">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://haodazhu.com/2026/04/10/multi-lidar-odometry-for-bumpy-environments/">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
+  <title>Multi-LiDAR Odometry for Bumpy Environments · haoda</title>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="haoda 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>haoda</a>
+      <nav class="site-nav" aria-label="主导航"><a href="/about-me/">About Me</a><a href="/blog/" aria-current="page">My Research</a><a href="/随笔/">随笔</a></nav>
+    </header>
+    <main id="content"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/blog/">My Research</a></nav><header class="page-heading"><h1>Multi-LiDAR Odometry for Bumpy Environments</h1><p class="page-meta"><time datetime="2026-04-10T18:22:18+08:00">2026年4月10日</time></p></header><article class="article-body" data-original-post-id="419">
+<p>多雷达系统，在颠簸环境下，有什么问题：</p>
+
+
+
+<ol>
+<li>dalio method problem:imu不准导致去畸变不准，导致估计不准。</li>
+
+
+
+<li>single lidar method like point lio:too linear，计算量大</li>
+
+
+
+<li>multi lidar:多个雷达之间的外参并不long time consistent，在颠簸环境内尤其严重</li>
+</ol>
+
+
+
+<p>所以：</p>
+
+
+
+<ol>
+<li>我们用adaptive state Augmentation来建模机器的连续运动，这样的话，就是用连续多段的连续运动建模的雷达位姿，同时，状态更新一直都是并行的，所以计算效率很高。</li>
+
+
+
+<li>我们把这种adaptive state augmentation的方法拓展到多雷达，同时也就解决的多雷达系统中，多个雷达之间的外参围绕固定外参波动的问题。</li>
+
+
+
+<li>同时，这种方法也可以拓展到纯ml系统上，不通过imu来判断是否做state augmentation，而是通过估计的速度的导数或者角速度的导数。</li>
+
+
+
+<li>同时，我们引入了一种新的评估方法，来评估局部建图的效果是否稳定，也就是通过局部地面分割来判断。</li>
+</ol>
+
+
+
+<p>那这个系统就这样设计：</p>
+
+
+
+<p>不需要复杂的建模两个雷达之间外参的扰动，而是把这个扰动放在state augmentation中一起解决。</p>
+
+
+
+<p>如果是多imu，我们就用imu融合的方法来claim自己能消除噪声，直接做多imu的融合。（参考mimc）</p>
+
+
+
+<p>如果是单imu，也无所谓，甚至在雷达和imu之间存在较大位姿差距的时候，同样可以使用，因为imu只是提供了一个先验。同样，这个也可以解决imu超量程的问题。</p>
+
+
+
+<p>如果没有imu，也无所谓。</p>
+
+
+
+<p>对于地图，我觉得也可以写进来，就写成voxelmap+这种感觉。我们可以先射箭后画靶，就说一下voxelmap在杂乱崎岖环境可能拟合不出平面，所以要保留一些点来做拟合。这部分不需要花太多的精力来写。</p>
+
+
+
+<p>我觉得我们还是要在最sota的方法上来开发我们的方法，所以，对于voxelmap里，关于点的噪声建模，我在考虑要不要加回来。对于voxelmap的持续拟合的功能，我觉得一定要加回来。这个如果到时候发现耗时不合适，就把持续拟合的次数搞少一些就行了。</p>
+
+
+
+<h2>实验</h2>
+
+
+
+<h3>数据集：</h3>
+
+
+
+<p>对比方法：m-loam（jianhao jiao，<a href="https://github.com/gogojjh/M-LOAM%EF%BC%89%EF%BC%8Cd" rel="noopener noreferrer">https://github.com/gogojjh/M-LOAM），d</a> loam（<a href="https://arxiv.org/pdf/2007.01483%EF%BC%8C%E6%9C%AC%E5%AE%9E%E9%AA%8C%E5%AE%A4%EF%BC%8Chttps://github.com/hku-mars/decentralized_loam%EF%BC%89%EF%BC%8C%E4%BD%86%E6%98%AF%E8%BF%99%E4%BA%9B%E9%83%BD%E6%98%AF%E6%B2%A1%E6%9C%89imu%E7%9A%84%E3%80%82https://github.com/shenhm516/CTE-MLO" rel="noopener noreferrer">https://arxiv.org/pdf/2007.01483，本实验室，https://github.com/hku-mars/decentralized_loam），但是这些都是没有imu的。https://github.com/shenhm516/CTE-MLO</a></p>
+
+
+
+<p>有imu的：<a href="https://github.com/minwoo0611/MA-LIO%EF%BC%8Chttps://github.com/engcang/FAST_LIO_MULTI%E8%BF%99%E4%B8%AA%E4%B8%8D%E6%98%AF%E6%96%87%E7%AB%A0%EF%BC%8C%E6%98%AF%E7%BD%91%E4%B8%8A%E7%9A%84%E5%AE%9E%E7%8E%B0%E3%80%82" rel="noopener noreferrer">https://github.com/minwoo0611/MA-LIO，https://github.com/engcang/FAST_LIO_MULTI这个不是文章，是网上的实现。</a></p>
+
+
+
+<p>可以看一下ma lio里面是怎么进行对比评估的，因为他里面也比较了m loam，可以学习学习他是怎么讲故事的。</p>
+
+
+
+<p>cte lio里面比较的方法不多，可以看看方法和消融实验怎么做的，评估一下基于连续时间的方法和我们的方法之间的差异。</p>
+
+
+
+<p>自己采集的数据集：我反而觉得这一部分应该占大头，因为我们的靶子就是多雷达系统+很颠簸的环境，所以自己采集的数据集很重要。然后，要说我们在运行的时候，发现对于评估地面机器人的可通过性，比看回环指标更加的重要，因为回环指标可能受地图影响较大，但是真正用来评估地面是不是可通行的，还是要看局部的点云。所以我们就引入了一种新的评估方法来评估我们的效果。也就是用地面分割的算法来评估我的方法。这部分可以让qingbo提供个评分接口，或者我们再讨论一下。</p>
+
+
+
+<p>这里的写法，应该是数据集作为一部分，然后定性分析我们的数据以及评估方法是另一个部分。数据集部分就用传统的里程计对比方法，耗时，rmse，e2e等。</p>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="695" src="/assets/images/6d28abd418a5-e688aae59bbe-2026-03-29-14-48-30.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="695" src="/assets/images/6cda42eb4114-e688aae59bbe-2026-03-29-14-48-19.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="576" src="/assets/images/56e80b691596-e5beaee4bfa1e59bbee78987_2026-03-29_195428_132.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="576" src="/assets/images/437fe258141e-e5beaee4bfa1e59bbee78987_2026-03-29_195421_453.png" alt="" decoding="async"></figure>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/lxkTAbPh?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/MpdoWSTM?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+</article><nav class="article-end" aria-label="正文后导航"><a href="/blog/">返回My Research</a><a href="/archive/">全部文章</a></nav></main>
+    <footer class="site-footer"><span class="footer-signature">haoda</span><div class="footer-links"><a href="/archive/">全部文章</a><a href="/about-me/">About Me</a><a href="https://github.com/zhuhaoda/github-pages-demo" rel="noopener noreferrer">GitHub</a></div></footer>
+  </div>
+</body>
+</html>

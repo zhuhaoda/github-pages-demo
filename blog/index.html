@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="2026年4月10日 Multi-LiDAR Odometry for Bumpy Environments 多雷达系统，在颠簸环境下，有什么问题： dalio method problem:imu不准导致去畸变不准，导致估计不准。 single lidar method like point lio:too linear，计算量大 multi lidar:多个雷达之间的外参并">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://haodazhu.com/blog/">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
+  <title>My Research · haoda</title>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="haoda 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>haoda</a>
+      <nav class="site-nav" aria-label="主导航"><a href="/about-me/">About Me</a><a href="/blog/" aria-current="page">My Research</a><a href="/随笔/">随笔</a></nav>
+    </header>
+    <main id="content"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a></nav><header class="page-heading"><h1>My Research</h1></header><article class="article-body is-page" data-original-post-id="64">
+<div class="content-group wide">
+<div class="content-columns wide">
+<div class="content-column">
+<div class="content-group wide">
+<div class="content-group"><ul class="post-list"><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="1024" height="695" src="/assets/images/6cda42eb4114-e688aae59bbe-2026-03-29-14-48-19.png" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2026-04-10T18:22:18+08:00">2026年4月10日</time></div>
+
+<h2 class="entry-title"><a href="/2026/04/10/multi-lidar-odometry-for-bumpy-environments/" target="_self">Multi-LiDAR Odometry for Bumpy Environments</a></h2>
+
+<div class="entry-excerpt"><p>多雷达系统，在颠簸环境下，有什么问题： dalio method problem:imu不准导致去畸变不准，导致估计不准。 single lidar method like point lio:too linear，计算量大 multi lidar:多个雷达之间的外参并不long time consistent，在颠簸环境内尤其严重 所以： 我们用adaptive state Augmentation来建模机器的连续运动，这样的话，就是用连续多段的连续运动建模的雷达位姿，同时，状态更新一直都是并行的，所以计算效率很高。 我们把这种adaptive state augmentation的方法拓展到多雷达，同时也就解决的多雷达系统中，多个雷达之间的外参围绕固定外参波动的问题。 同时，这种方法也可以拓展到纯ml系统上，不通过imu来判断是否做state augmentation，而是通过估计的速度的导数或者角速度的导数。 同时，我们引入了一种新的评估方法，来评估局部建图的效果是否稳定，也就是通过局部地面分割来判断。 那这个系统就这样设计： 不需要复杂的建模两个雷达之间外参的扰动，而是把这个扰动放在state augmentation中一起解决。 如果是多imu，我们就用imu融合的方法来claim自己能消除噪声，直接做多imu的融合。（参考mimc） 如果是单imu，也无所谓，甚至在雷达和imu之间存在较大位姿差距的时候，同样可以使用，因为imu只是提供了一个先验。同样，这个也可以解决imu超量程的问题。 如果没有imu，也无所谓。 对于地图，我觉得也可以写进来，就写成voxelmap+这种感觉。我们可以先射箭后画靶，就说一下voxelmap在杂乱崎岖环境可能拟合不出平面，所以要保留一些点来做拟合。这部分不需要花太多的精力来写。 我觉得我们还是要在最sota的方法上来开发我们的方法，所以，对于voxelmap里，关于点的噪声建模，我在考虑要不要加回来。对于voxelmap的持续拟合的功能，我觉得一定要加回来。这个如果到时候发现耗时不合适，就把持续拟合的次数搞少一些就行了。 实验 数据集：… <a href="/2026/04/10/multi-lidar-odometry-for-bumpy-environments/">Read more</a></p></div></div>
+</div>
+
+</li><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="1024" height="332" src="/assets/images/507721ae957c-image-16-1.png" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2026-04-10T18:15:30+08:00">2026年4月10日</time></div>
+
+<h2 class="entry-title"><a href="/2026/04/10/rs-livo/" target="_self">rs livo</a></h2>
+
+<div class="entry-excerpt"><p>什么是rolling shutter？ <a href="https://blog.csdn.net/lz0499/article/details/102616773" rel="nofollow noopener noreferrer">https://blog.csdn.net/lz0499/article/details/102616773</a> 一开始，总想着把位姿更新里加入角速度和加速度之类的，还是更新一个位姿，但是怎么也做不出媲美livo2在golbal shutter模式下的效果。 想法：elastic slam，and msckf elastic slam such as ct-icp，基于优化的，同时优化雷达帧的开始和结束位姿。 msckf：通过在滤波状态中维护多个时间的位姿克隆，使一个视觉测量同时约束多个状态，并通过消元把“非状态变量（特征）”的影响折叠进状态更新。 对于rolling shutter，其实一个视觉测量就是可以约束多个姿态，也就是可以简单的把rs的姿态设定为两个，开始姿态和结束姿态。 最终方案的核心： 每帧 RS 图像内部只有两端时刻：Ts（第一行曝光时刻，start）与 Te（最后一行曝光时刻，end） 在滤波状态里显式加入一个 pose clone：(Rs,ps) 与主状态的(Re,pe) 共同描述 RS 内的连续位姿 RS 观测用 两端位姿插值 + 固定点迭代满足隐式 RS 约束… <a href="/2026/04/10/rs-livo/">Read more</a></p></div></div>
+</div>
+
+</li><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="1024" height="614" src="/assets/images/17e3350145ed-e688aae59bbe-2026-04-10-17-57-27.png" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2026-04-10T17:57:58+08:00">2026年4月10日</time></div>
+
+<h2 class="entry-title"><a href="/2026/04/10/dalio-degeneracy-aware-lidar-inertial-odometry-with-adaptive-multi-resolution-mapping/" target="_self">DALIO: Degeneracy-Aware LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping</a></h2>
+
+<div class="entry-excerpt"><p>a useful lio system <a href="/2026/04/10/dalio-degeneracy-aware-lidar-inertial-odometry-with-adaptive-multi-resolution-mapping/">Read more</a></p></div></div>
+</div>
+
+</li><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="998" height="696" src="/assets/images/a1bd898df3b9-wpse59bbee789871.png" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2024-01-27T16:55:20+08:00">2024年1月27日</time></div>
+
+<h2 class="entry-title"><a href="/2024/01/27/cable-driven-7-dof-humanoid-manipulator/" target="_self">Cable-driven 7-DOF humanoid manipulator</a></h2>
+
+<div class="entry-excerpt"><p>At Tsinghua AI &amp; Robot Lab, I, along with Xiankun Zhu, Hong Luo, and others, collaborated under the guidance of Dr. Chongkun Xia to accomplish the inaugural design and control of the Cable-driven 7-DOF humanoid… <a href="/2024/01/27/cable-driven-7-dof-humanoid-manipulator/">Read more</a></p></div></div>
+</div>
+
+</li><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="960" height="720" src="/assets/images/9cdc8a228cdc-robo3.jpg" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2024-01-27T16:37:19+08:00">2024年1月27日</time></div>
+
+<h2 class="entry-title"><a href="/2024/01/27/robocon2022/" target="_self">Robocon2022</a></h2>
+
+<div class="entry-excerpt"><p>In the 2021-2022 season, under the leadership of Siqi Liang, the robot combat team of Harbin Institute of Technology (Shenzhen) – WTR, participated in the Robocon 2022 competition. I am also fortunate to have become… <a href="/2024/01/27/robocon2022/">Read more</a></p></div></div>
+</div>
+
+</li><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="1024" height="977" src="/assets/images/e5fa61b0eff3-e59bbee789871.png" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2024-01-06T15:29:28+08:00">2024年1月6日</time></div>
+
+<h2 class="entry-title"><a href="/2024/01/06/safe-reinforcement-learning-based-motion-planning-for-functional-mobile-robots-suffering-an-uncontrollable-mobile-robot/" target="_self">Safe Reinforcement Learning-based Motion Planning for Functional Mobile Robots Suffering an Uncontrollable Mobile Robot</a></h2>
+
+<div class="entry-excerpt"><p>An increasing number of Autonomous Mobile&nbsp;Robots(AMRs)have been used in warehouses and factories in recent years.With the number of AMRs in a warehouse or factory increased,the risk of one of the AMRs being out of control… <a href="/2024/01/06/safe-reinforcement-learning-based-motion-planning-for-functional-mobile-robots-suffering-an-uncontrollable-mobile-robot/">Read more</a></p></div></div>
+</div>
+
+</li><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="851" height="749" src="/assets/images/7eeed9aff1e3-figure-2.png" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2024-01-06T12:55:59+08:00">2024年1月6日</time></div>
+
+<h2 class="entry-title"><a href="/2024/01/06/data-driven-dynamics-modeling-and-control-strategy-for-a-planar-n-dof-cable-driven-parallel-driven-by-n1-cables-allowing-collisions/" target="_self">Data-Driven Dynamics Modeling and Control Strategy for a Planar n-DOF Cable-Driven Parallel Driven by n+1 Cables Allowing Collisions</a></h2>
+
+<div class="entry-excerpt"><p>Scholars have proposed to allow collisions of cables with the base, the end-effector, or obstacles to expand the workspace of Cable-Driven Parallel Robots (CDPRs) in recent years.However, allowing collisions also leads to new challenges in… <a href="/2024/01/06/data-driven-dynamics-modeling-and-control-strategy-for-a-planar-n-dof-cable-driven-parallel-driven-by-n1-cables-allowing-collisions/">Read more</a></p></div></div>
+</div>
+
+</li><li class="post-preview">
+
+<div class="content-group">
+<div class="content-group"><figure class="entry-image"><img loading="lazy" width="1024" height="576" src="/assets/images/d8e1e38699f0-sw0224-1.png" alt="" decoding="async"></figure>
+
+<div class="entry-date"><time datetime="2024-01-06T12:44:56+08:00">2024年1月6日</time></div>
+
+<h2 class="entry-title"><a href="/2024/01/06/dynamic-control-of-a-cable-driven-parallel-robot-allowing-collisions-via-sim-to-real-reinforcement-learning/" target="_self">Dynamic Control of a Cable-Driven Parallel Robot Allowing Collisions via Sim-to-Real Reinforcement Learning</a></h2>
+
+<div class="entry-excerpt"><p>Cable-Driven Parallel Robots (CDPRs) have attracted the attention of a large number of researchers in recent years.Researchers proposed to allow wrapping phenomenon to expand the workspace of CDPRs, leading to challenges in the dynamic control… <a href="/2024/01/06/dynamic-control-of-a-cable-driven-parallel-robot-allowing-collisions-via-sim-to-real-reinforcement-learning/">Read more</a></p></div></div>
+</div>
+
+</li></ul>
+
+
+
+</div>
+</div>
+</div>
+
+
+
+<div class="content-column sidebar">
+<div class="content-group">
+<h2>Welcome to my research web!</h2>
+
+
+
+<p>I am Haoda Zhu, a researcher in the field of robotics. On this academic homepage, I will be sharing my research findings and contributions in the realm of robotics.</p>
+
+
+
+<h3>Key words</h3>
+
+
+
+<p>robotics; SLAM; reinforcement learning.</p>
+</div>
+</div>
+</div>
+</div>
+</article><nav class="article-end" aria-label="正文后导航"><a href="/">返回首页</a><a href="/archive/">全部文章</a></nav></main>
+    <footer class="site-footer"><span class="footer-signature">haoda</span><div class="footer-links"><a href="/archive/">全部文章</a><a href="/about-me/">About Me</a><a href="https://github.com/zhuhaoda/github-pages-demo" rel="noopener noreferrer">GitHub</a></div></footer>
+  </div>
+</body>
+</html>

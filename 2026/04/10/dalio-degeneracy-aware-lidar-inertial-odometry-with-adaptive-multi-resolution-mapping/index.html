@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="dalio下载 map design https://www.notion.so/1-10f9a83cda19816485eff7a300fe0430 为什么不在ikd tree的基础上进行修改？其实也是试过的。 完整的设计 实际上，这个系统一开始有更完整的设计。 不退化时，通过点云分批降低耗时，且通过在线外参估计来标定其他传感器 退化后，加入其他传感器，松耦合的更新 还不行，">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://haodazhu.com/2026/04/10/dalio-degeneracy-aware-lidar-inertial-odometry-with-adaptive-multi-resolution-mapping/">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
+  <title>DALIO: Degeneracy-Aware LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping · haoda</title>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="haoda 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>haoda</a>
+      <nav class="site-nav" aria-label="主导航"><a href="/about-me/">About Me</a><a href="/blog/" aria-current="page">My Research</a><a href="/随笔/">随笔</a></nav>
+    </header>
+    <main id="content"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/blog/">My Research</a></nav><header class="page-heading"><h1>DALIO: Degeneracy-Aware LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping</h1><p class="page-meta"><time datetime="2026-04-10T17:57:58+08:00">2026年4月10日</time></p></header><article class="article-body" data-original-post-id="379">
+<div><a id="wp-block-file--media-f809f01f-5e28-4961-a879-f3cbaa5b2678" href="/assets/files/838ef6f15ae5-dalio.pdf">dalio</a><a href="/assets/files/838ef6f15ae5-dalio.pdf" download="" aria-describedby="wp-block-file--media-f809f01f-5e28-4961-a879-f3cbaa5b2678">下载</a></div>
+
+
+
+<p></p>
+
+
+
+<p></p>
+
+
+
+<h1>map design</h1>
+
+
+
+<p><a href="https://www.notion.so/1-10f9a83cda19816485eff7a300fe0430" rel="noopener noreferrer">https://www.notion.so/1-10f9a83cda19816485eff7a300fe0430</a></p>
+
+
+
+<p>为什么不在ikd tree的基础上进行修改？其实也是试过的。</p>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="318" src="/assets/images/1b6666359bfc-image-8-2.png" alt="" decoding="async"></figure>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/EA3fUYDj?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/B7wHHn86?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="318" src="/assets/images/07ead3107ee5-image-7-1.png" alt="" decoding="async"></figure>
+
+
+
+<p></p>
+
+
+
+<h1>完整的设计</h1>
+
+
+
+<p>实际上，这个系统一开始有更完整的设计。</p>
+
+
+
+<ol>
+<li>不退化时，通过点云分批降低耗时，且通过在线外参估计来标定其他传感器</li>
+
+
+
+<li>退化后，加入其他传感器，松耦合的更新</li>
+
+
+
+<li>还不行，就进行退化抑制</li>
+</ol>
+
+
+
+<p>但是松耦合的方法，尤其是camera，实在是不如livo2这样的sota方法效果好，因为livo2的地图融合了雷达和相机的优势。松耦合的优势在与可以更轻松的添加传感器，不需要提前标定外参，因为可以在lio不退化的时候在线估计。但是有几个核心问题：</p>
+
+
+
+<ol>
+<li>加相机的效果没法和sota比</li>
+
+
+
+<li>对于在线外参估计，如果运动者随便走，是不能标定出外参的。比如雷达和车体之间的标定，实际上依赖拟合地面信息来估计。</li>
+</ol>
+
+
+
+<p></p>
+</article><nav class="article-end" aria-label="正文后导航"><a href="/blog/">返回My Research</a><a href="/archive/">全部文章</a></nav></main>
+    <footer class="site-footer"><span class="footer-signature">haoda</span><div class="footer-links"><a href="/archive/">全部文章</a><a href="/about-me/">About Me</a><a href="https://github.com/zhuhaoda/github-pages-demo" rel="noopener noreferrer">GitHub</a></div></footer>
+  </div>
+</body>
+</html>
