@@ -22,6 +22,8 @@ The archive distinguishes four verified publications, research and engineering p
 
 Selected Work contains FAST-LIVO-RS, DALIO, and the multi-LiDAR odometry project, in that order. Social links use the owner's Google Scholar, LinkedIn, and GitHub profiles. The photo gallery preserves natural image ratios in a responsive multi-column layout, and the experience timeline uses explicit year/content columns with a stacked mobile layout.
 
+Each Selected Work entry includes an original research visualization: FAST-LIVO-RS Figure 4, DALIO Figure 1(a), and the original multi-LiDAR point-cloud image. The homepage badge above the name is removed; the FAST-LIVO-RS publication remains available. Experience is limited to PhD in robotics (2024–2028) and Robospectra (Strutt) (2023–2026), with the owner's founding-member and SLAM-team-lead role.
+
 All 16 original articles and their inline images are retained. The old About/Research/Writing pages remain as readable legacy archives. Old WordPress upload paths are also preserved, including the DALIO PDF URL used by external citations.
 
 The six original WordPress videos remain external links; their video files were not copied. There are no comments, drafts, WordPress scripts, analytics, or private account data. Search and category filters run locally in the browser. Only the light/dark theme preference is saved in localStorage.
