@@ -1,21 +1,28 @@
-# haoda · Personal website
+# Haoda Zhu · Robotics & SLAM
 
 The public personal website at **https://haodazhu.com/**, hosted with GitHub Pages.
 
-The site's published WordPress text, photographs, figures, captions, and PDF attachments were copied into static HTML on 2026-11-19. Original page and article permalinks are retained. The current site uses a simple responsive layout rather than the old WordPress theme or interactive effects.
+The site's original published text, photographs, figures, captions, and PDF attachments are preserved. On 2026-11-19 the presentation was redesigned using [siqi.app](https://siqi.app/) as the layout reference: Geist typography, a soft blue gradient, a floating navigation capsule, light/dark themes, and separate research and writing archives.
 
 ## Contents
 
 - Homepage: `index.html`
-- About Me: `about-me/index.html`
-- My Research: `blog/index.html`
-- Essays: `随笔/index.html`
-- All articles: `archive/index.html`
-- Articles: original year/month/day/slug paths
+- About: `about/index.html`
+- Publications: `publication/index.html`
+- Engineering projects and research notes: `projects/index.html`
+- Personal writing: `writing/index.html`
+- Searchable archive: `archive/index.html`
+- Original articles: original year/month/day/slug paths, also available at their new archive routes
 - Local images and documents: `assets/images/` and `assets/files/`
 - Shared styles: `assets/site.css`
+- Theme and client-only filtering: `assets/theme-init.js` and `assets/site.js`
+- Self-hosted Geist font and its SIL Open Font License: `assets/fonts/`
 
-The source contains 3 original pages and 16 original articles. The six pre-existing WordPress-hosted videos are retained as links; their video files were not copied. No comments, drafts, forms, WordPress scripts, tracking code, or private account data are included.
+The archive distinguishes three verified publications, two engineering projects, research notes, and personal essays. DALIO's published paper and the original design notes have separate entries. Publication titles, authors, venues, and DOIs were checked against publisher-deposited Crossref records and the available paper.
+
+All 16 original articles and their inline images are retained. The old About/Research/Writing pages remain as readable legacy archives. Old WordPress upload paths are also preserved, including the DALIO PDF URL used by external citations.
+
+The six original WordPress videos remain external links; their video files were not copied. There are no comments, drafts, WordPress scripts, analytics, or private account data. Search and category filters run locally in the browser. Only the light/dark theme preference is saved in localStorage.
 
 ## Local preview
 

@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Design and control of a seven-degree-of-freedom cable-driven humanoid arm for agile manipulation and prospective space maintenance.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://haodazhu.com/projects/cable-driven-manipulator/">
+  <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
+  <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin="">
+  <script src="/assets/theme-init.js?v=reference-20261119"></script>
+  <link rel="stylesheet" href="/assets/site.css?v=reference-20261119">
+  <script src="/assets/site.js?v=reference-20261119" defer=""></script>
+  <title>Cable-driven 7-DOF humanoid manipulator · Haoda Zhu</title>
+</head>
+<body id="top" data-page="article">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="monogram" href="/" aria-label="Haoda Zhu home"><img src="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg" width="38" height="38" alt="Haoda Zhu"></a>
+    <nav class="primary-nav" aria-label="Main navigation"><a href="/" aria-label="Home" title="Home"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10H15v-7H9v7H3Z"></path></svg><span class="nav-label">Home</span></a><a href="/about/" aria-label="About" title="About"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-5 16-5 16 0"></path></svg><span class="nav-label">About</span></a><a href="/publication/" aria-label="Publications" title="Publications"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v5h5M8 12h8M8 16h8"></path></svg><span class="nav-label">Publications</span></a><a href="/projects/" class="active" aria-current="page" aria-label="Projects" title="Projects"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><ellipse cx="12" cy="12" rx="4" ry="10"></ellipse><path d="M2 12h20"></path></svg><span class="nav-label">Projects</span></a><a href="/writing/" aria-label="Writing" title="Writing"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12H4v-5ZM14 5l5 5"></path></svg><span class="nav-label">Writing</span></a><button id="theme-toggle" class="icon-button" type="button" aria-label="Switch to dark theme" title="Switch theme" aria-pressed="false"><span class="theme-moon"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 13A9 9 0 0 1 11 3 9 9 0 1 0 21 13Z"></path></svg></span><span class="theme-sun"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"></path></svg></span></button></nav>
+    <span class="header-location">Hong Kong</span>
+  </header>
+  <main id="main" class="site-main"><article class="paper-detail"><header class="paper-detail-header"><span class="detail-venue">Engineering project</span><h1>Cable-driven 7-DOF humanoid manipulator</h1><p class="page-meta"><time datetime="2024-01-27T16:55:20+08:00">2024年1月27日</time></p></header><div class="article-body prose" data-original-post-id="174">
+<p>At Tsinghua AI &amp; Robot Lab, I, along with Xiankun Zhu, Hong Luo, and others, collaborated under the guidance of Dr. Chongkun Xia to accomplish the inaugural design and control of the Cable-driven 7-DOF humanoid manipulator.</p>
+
+
+
+<h2 id="section-1">problem and idea</h2>
+
+
+
+<p>The general manipulator has a large inertia and cannot complete fast operation, but the Cable-driven manipulator can complete fast operation because its weight is concentrated on the shoulder.Such a structure demonstrates its advantages more prominently in space. We are committed to lightweighting and streamlining this robotic arm, enabling agile maintenance work on satellites and spacecraft in space.</p>
+
+
+
+<div class="image-gallery"><div class="gallery-row"><div class="gallery-col"><figure class="gallery-item"><img alt="" src="/assets/images/79b9fa9f60dc-ts1.png" loading="lazy" decoding="async" width="975" height="939"></figure></div><div class="gallery-col"><figure class="gallery-item"><img alt="" src="/assets/images/43eb8180c024-ts2.png" loading="lazy" decoding="async" width="1008" height="1383"></figure></div></div><div class="gallery-row"><div class="gallery-col"><figure class="gallery-item"><img alt="" src="/assets/images/a1bd898df3b9-wpse59bbee789871.png" loading="lazy" decoding="async" width="998" height="696"></figure><figure class="gallery-item"><img alt="" src="/assets/images/35ddca65e769-wpse59bbee789872.png" loading="lazy" decoding="async" width="882" height="608"></figure></div><div class="gallery-col"><figure class="gallery-item"><img alt="" src="/assets/images/ea9f25061693-wpse59bbee789873.png" loading="lazy" decoding="async" width="448" height="779"></figure></div></div></div>
+</div><nav class="article-end" aria-label="Article navigation"><a href="/projects/">Back to Projects</a><a href="/archive/">All entries</a></nav></article></main>
+  <footer class="site-footer"><span>© 2026 Haoda Zhu</span><span class="footer-credit">Layout inspired by <a href="https://siqi.app/" rel="noopener noreferrer">siqi.app</a></span><div class="footer-links"><a href="/archive/">Archive</a><a href="#top">Back to top</a></div></footer>
+
+
+</body></html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Design notes on adaptive state augmentation for multi-LiDAR odometry in bumpy environments, alongside mapping and evaluation ideas.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://haodazhu.com/writing/multi-lidar-odometry/">
+  <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
+  <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin="">
+  <script src="/assets/theme-init.js?v=reference-20261119"></script>
+  <link rel="stylesheet" href="/assets/site.css?v=reference-20261119">
+  <script src="/assets/site.js?v=reference-20261119" defer=""></script>
+  <title>Multi-LiDAR odometry · Haoda Zhu</title>
+</head>
+<body id="top" data-page="article">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="monogram" href="/" aria-label="Haoda Zhu home"><img src="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg" width="38" height="38" alt="Haoda Zhu"></a>
+    <nav class="primary-nav" aria-label="Main navigation"><a href="/" aria-label="Home" title="Home"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10H15v-7H9v7H3Z"></path></svg><span class="nav-label">Home</span></a><a href="/about/" aria-label="About" title="About"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-5 16-5 16 0"></path></svg><span class="nav-label">About</span></a><a href="/publication/" aria-label="Publications" title="Publications"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v5h5M8 12h8M8 16h8"></path></svg><span class="nav-label">Publications</span></a><a href="/projects/" class="active" aria-current="page" aria-label="Projects" title="Projects"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><ellipse cx="12" cy="12" rx="4" ry="10"></ellipse><path d="M2 12h20"></path></svg><span class="nav-label">Projects</span></a><a href="/writing/" aria-label="Writing" title="Writing"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12H4v-5ZM14 5l5 5"></path></svg><span class="nav-label">Writing</span></a><button id="theme-toggle" class="icon-button" type="button" aria-label="Switch to dark theme" title="Switch theme" aria-pressed="false"><span class="theme-moon"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 13A9 9 0 0 1 11 3 9 9 0 1 0 21 13Z"></path></svg></span><span class="theme-sun"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"></path></svg></span></button></nav>
+    <span class="header-location">Hong Kong</span>
+  </header>
+  <main id="main" class="site-main"><article class="paper-detail"><header class="paper-detail-header"><span class="detail-venue">Research notes</span><h1>Multi-LiDAR odometry</h1><p class="page-meta"><time datetime="2026-04-10T18:22:18+08:00">2026年4月10日</time></p></header><div class="article-body prose" data-original-post-id="419">
+<p>多雷达系统，在颠簸环境下，有什么问题：</p>
+
+
+
+<ol>
+<li>dalio method problem:imu不准导致去畸变不准，导致估计不准。</li>
+
+
+
+<li>single lidar method like point lio:too linear，计算量大</li>
+
+
+
+<li>multi lidar:多个雷达之间的外参并不long time consistent，在颠簸环境内尤其严重</li>
+</ol>
+
+
+
+<p>所以：</p>
+
+
+
+<ol>
+<li>我们用adaptive state Augmentation来建模机器的连续运动，这样的话，就是用连续多段的连续运动建模的雷达位姿，同时，状态更新一直都是并行的，所以计算效率很高。</li>
+
+
+
+<li>我们把这种adaptive state augmentation的方法拓展到多雷达，同时也就解决的多雷达系统中，多个雷达之间的外参围绕固定外参波动的问题。</li>
+
+
+
+<li>同时，这种方法也可以拓展到纯ml系统上，不通过imu来判断是否做state augmentation，而是通过估计的速度的导数或者角速度的导数。</li>
+
+
+
+<li>同时，我们引入了一种新的评估方法，来评估局部建图的效果是否稳定，也就是通过局部地面分割来判断。</li>
+</ol>
+
+
+
+<p>那这个系统就这样设计：</p>
+
+
+
+<p>不需要复杂的建模两个雷达之间外参的扰动，而是把这个扰动放在state augmentation中一起解决。</p>
+
+
+
+<p>如果是多imu，我们就用imu融合的方法来claim自己能消除噪声，直接做多imu的融合。（参考mimc）</p>
+
+
+
+<p>如果是单imu，也无所谓，甚至在雷达和imu之间存在较大位姿差距的时候，同样可以使用，因为imu只是提供了一个先验。同样，这个也可以解决imu超量程的问题。</p>
+
+
+
+<p>如果没有imu，也无所谓。</p>
+
+
+
+<p>对于地图，我觉得也可以写进来，就写成voxelmap+这种感觉。我们可以先射箭后画靶，就说一下voxelmap在杂乱崎岖环境可能拟合不出平面，所以要保留一些点来做拟合。这部分不需要花太多的精力来写。</p>
+
+
+
+<p>我觉得我们还是要在最sota的方法上来开发我们的方法，所以，对于voxelmap里，关于点的噪声建模，我在考虑要不要加回来。对于voxelmap的持续拟合的功能，我觉得一定要加回来。这个如果到时候发现耗时不合适，就把持续拟合的次数搞少一些就行了。</p>
+
+
+
+<h2 id="section-1">实验</h2>
+
+
+
+<h3 id="section-2">数据集：</h3>
+
+
+
+<p>对比方法：m-loam（jianhao jiao，<a href="https://github.com/gogojjh/M-LOAM" rel="noopener noreferrer">https://github.com/gogojjh/M-LOAM），d</a> loam（<a href="https://arxiv.org/pdf/2007.01483" rel="noopener noreferrer">https://arxiv.org/pdf/2007.01483</a>，本实验室，<a href="https://github.com/hku-mars/decentralized_loam" rel="noopener noreferrer">https://github.com/hku-mars/decentralized_loam</a>），但是这些都是没有imu的。<a href="https://github.com/shenhm516/CTE-MLO" rel="noopener noreferrer">https://github.com/shenhm516/CTE-MLO</a></p>
+
+
+
+<p>有imu的：<a href="https://github.com/minwoo0611/MA-LIO" rel="noopener noreferrer">https://github.com/minwoo0611/MA-LIO</a>，<a href="https://github.com/engcang/FAST_LIO_MULTI" rel="noopener noreferrer">https://github.com/engcang/FAST_LIO_MULTI</a>这个不是文章，是网上的实现。</p>
+
+
+
+<p>可以看一下ma lio里面是怎么进行对比评估的，因为他里面也比较了m loam，可以学习学习他是怎么讲故事的。</p>
+
+
+
+<p>cte lio里面比较的方法不多，可以看看方法和消融实验怎么做的，评估一下基于连续时间的方法和我们的方法之间的差异。</p>
+
+
+
+<p>自己采集的数据集：我反而觉得这一部分应该占大头，因为我们的靶子就是多雷达系统+很颠簸的环境，所以自己采集的数据集很重要。然后，要说我们在运行的时候，发现对于评估地面机器人的可通过性，比看回环指标更加的重要，因为回环指标可能受地图影响较大，但是真正用来评估地面是不是可通行的，还是要看局部的点云。所以我们就引入了一种新的评估方法来评估我们的效果。也就是用地面分割的算法来评估我的方法。这部分可以让qingbo提供个评分接口，或者我们再讨论一下。</p>
+
+
+
+<p>这里的写法，应该是数据集作为一部分，然后定性分析我们的数据以及评估方法是另一个部分。数据集部分就用传统的里程计对比方法，耗时，rmse，e2e等。</p>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="695" src="/assets/images/6d28abd418a5-e688aae59bbe-2026-03-29-14-48-30.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="695" src="/assets/images/6cda42eb4114-e688aae59bbe-2026-03-29-14-48-19.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="576" src="/assets/images/56e80b691596-e5beaee4bfa1e59bbee78987_2026-03-29_195428_132.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="576" src="/assets/images/437fe258141e-e5beaee4bfa1e59bbee78987_2026-03-29_195421_453.png" alt="" decoding="async"></figure>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/lxkTAbPh?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/MpdoWSTM?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+
+
+
+<p></p>
+
+
+
+<p></p>
+</div><nav class="article-end" aria-label="Article navigation"><a href="/projects/">Back to Projects</a><a href="/archive/">All entries</a></nav></article></main>
+  <footer class="site-footer"><span>© 2026 Haoda Zhu</span><span class="footer-credit">Layout inspired by <a href="https://siqi.app/" rel="noopener noreferrer">siqi.app</a></span><div class="footer-links"><a href="/archive/">Archive</a><a href="#top">Back to top</a></div></footer>
+
+
+</body></html>

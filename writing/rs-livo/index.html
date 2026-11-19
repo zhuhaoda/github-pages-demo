@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Notes on rolling-shutter-aware LiDAR–visual–inertial estimation using pose cloning, endpoint interpolation, and adaptive state augmentation.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://haodazhu.com/writing/rs-livo/">
+  <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
+  <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin="">
+  <script src="/assets/theme-init.js?v=reference-20261119"></script>
+  <link rel="stylesheet" href="/assets/site.css?v=reference-20261119">
+  <script src="/assets/site.js?v=reference-20261119" defer=""></script>
+  <title>RS-LIVO · Haoda Zhu</title>
+</head>
+<body id="top" data-page="article">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="monogram" href="/" aria-label="Haoda Zhu home"><img src="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg" width="38" height="38" alt="Haoda Zhu"></a>
+    <nav class="primary-nav" aria-label="Main navigation"><a href="/" aria-label="Home" title="Home"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10H15v-7H9v7H3Z"></path></svg><span class="nav-label">Home</span></a><a href="/about/" aria-label="About" title="About"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-5 16-5 16 0"></path></svg><span class="nav-label">About</span></a><a href="/publication/" aria-label="Publications" title="Publications"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v5h5M8 12h8M8 16h8"></path></svg><span class="nav-label">Publications</span></a><a href="/projects/" class="active" aria-current="page" aria-label="Projects" title="Projects"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><ellipse cx="12" cy="12" rx="4" ry="10"></ellipse><path d="M2 12h20"></path></svg><span class="nav-label">Projects</span></a><a href="/writing/" aria-label="Writing" title="Writing"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12H4v-5ZM14 5l5 5"></path></svg><span class="nav-label">Writing</span></a><button id="theme-toggle" class="icon-button" type="button" aria-label="Switch to dark theme" title="Switch theme" aria-pressed="false"><span class="theme-moon"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 13A9 9 0 0 1 11 3 9 9 0 1 0 21 13Z"></path></svg></span><span class="theme-sun"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"></path></svg></span></button></nav>
+    <span class="header-location">Hong Kong</span>
+  </header>
+  <main id="main" class="site-main"><article class="paper-detail"><header class="paper-detail-header"><span class="detail-venue">Research notes</span><h1>RS-LIVO</h1><p class="page-meta"><time datetime="2026-04-10T18:15:30+08:00">2026年4月10日</time></p></header><div class="article-body prose" data-original-post-id="395">
+<p>什么是rolling shutter？</p>
+
+
+
+<p><a href="https://blog.csdn.net/lz0499/article/details/102616773" rel="noopener noreferrer">https://blog.csdn.net/lz0499/article/details/102616773</a></p>
+
+
+
+<p>一开始，总想着把位姿更新里加入角速度和加速度之类的，还是更新一个位姿，但是怎么也做不出媲美livo2在golbal shutter模式下的效果。</p>
+
+
+
+<p></p>
+
+
+
+<p>想法：elastic slam，and msckf</p>
+
+
+
+<p>elastic slam such as ct-icp，基于优化的，同时优化雷达帧的开始和结束位姿。</p>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="291" src="/assets/images/d88a7143f4b9-image-9-1.png" alt="" decoding="async"></figure>
+
+
+
+<p>msckf：通过在滤波状态中维护多个时间的位姿克隆，使一个视觉测量同时约束多个状态，并通过消元把“非状态变量（特征）”的影响折叠进状态更新。</p>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="574" src="/assets/images/8d05378bc8a4-image-10-1.png" alt="" decoding="async"></figure>
+
+
+
+<p>对于rolling shutter，其实一个视觉测量就是可以约束多个姿态，也就是可以简单的把rs的姿态设定为两个，开始姿态和结束姿态。</p>
+
+
+
+<p>最终方案的核心：</p>
+
+
+
+<ul>
+<li>每帧 RS 图像内部只有两端时刻：<strong>Ts</strong>（第一行曝光时刻，start）与 <strong>Te</strong>（最后一行曝光时刻，end）</li>
+
+
+
+<li>在滤波状态里显式加入一个 <strong>pose clone</strong>：(Rs,ps) 与主状态的(Re,pe) 共同描述 RS 内的连续位姿</li>
+
+
+
+<li>RS 观测用 <strong>两端位姿插值 + 固定点迭代</strong>满足隐式 RS 约束</li>
+
+
+
+<li>传播时用MSCKF 的方法在Ts 处扩维并建立cross协方差</li>
+
+
+
+<li>视觉更新后对 clone 进行<strong>边缘化</strong>，把 RS 信息折叠回主状态，然后删掉 clone，进入下一帧</li>
+</ul>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="593" src="/assets/images/6e05b9dad83e-image-11-1.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="873" src="/assets/images/4254a7479a2f-image-15-1.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="860" src="/assets/images/7e1f2926f935-image-14-1.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="860" src="/assets/images/9309f1bd66ab-image-13-1.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="332" src="/assets/images/6c965cf5c46c-image-12-1.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="332" src="/assets/images/507721ae957c-image-16-1.png" alt="" decoding="async"></figure>
+
+
+
+<p>对于自适应位姿clone，主要的问题是如何判断要插入一个clone位姿。对于rs来说，旋转的影响更大，而我们的模型里，两个clone位姿之间是slerp插值，所以当角加速度过大的时候，位姿插值就会不准确。</p>
+
+
+
+<p>通过设定最大角度误差的值，推算最大可接受的角加速度，通过这个来确定要不要加入位姿。</p>
+
+
+
+<p>后续也可以加入平移上界，不过目前看来够用了。</p>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="974" src="/assets/images/945fddccedae-image-20.png" alt="" decoding="async"></figure>
+
+
+
+<p>对于图像去畸变：</p>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="344" src="/assets/images/8ffdbc655458-e688aae59bbe-2026-03-29-19-51-14.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="338" src="/assets/images/d01fda8d345a-e688aae59bbe-2026-03-29-19-52-54.png" alt="" decoding="async"></figure>
+
+
+
+<figure class="entry-image"><img loading="lazy" width="1024" height="338" src="/assets/images/5836af891bf5-e688aae59bbe-2026-03-29-19-53-03.png" alt="" decoding="async"></figure>
+
+
+
+<h1> rolling shutter aware neuvox</h1>
+
+
+
+<p>方法：</p>
+
+
+
+<p>原始方案中，体渲染沿射线采样空间点，查询体素网格得到颜色与密度，经体渲染方程积分为像素颜色。核心假设是一张图所有像素共享同一相机位姿，所有射线从同一原点、按固定朝向发出。</p>
+
+
+
+<p>但卷帘快门相机逐行曝光，曝光期间相机持续运动，不同行实际对应不同位姿。若仍用单一位姿生成射线，会引入系统性几何误差，产生条纹伪影和几何失真。</p>
+
+
+
+<p>本次改造为每张图像引入多个行级锚点位姿，训练时根据像素行号在相邻锚点间做插值，得到逐行专属位姿并据此生成射线。体渲染流程本身不变，仅射线的起点与方向更贴合真实成像过程。</p>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/FprGPRP0?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+
+
+
+		<figure>
+			<div> <a href="https://video.wordpress.com/embed/dfYXSQgL?cover=1&amp;autoPlay=0&amp;controls=1&amp;loop=0&amp;muted=0&amp;persistVolume=1&amp;playsinline=0&amp;preloadContent=metadata&amp;useAverageColor=1&amp;hd=0" target="_blank" rel="noopener noreferrer">查看原视频</a></div>
+
+
+		</figure>
+		</div><nav class="article-end" aria-label="Article navigation"><a href="/projects/">Back to Projects</a><a href="/archive/">All entries</a></nav></article></main>
+  <footer class="site-footer"><span>© 2026 Haoda Zhu</span><span class="footer-credit">Layout inspired by <a href="https://siqi.app/" rel="noopener noreferrer">siqi.app</a></span><div class="footer-links"><a href="/archive/">Archive</a><a href="#top">Back to top</a></div></footer>
+
+
+</body></html>

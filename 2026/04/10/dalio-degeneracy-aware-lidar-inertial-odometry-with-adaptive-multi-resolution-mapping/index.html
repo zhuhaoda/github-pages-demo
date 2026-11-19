@@ -1,23 +1,24 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
+<!DOCTYPE html><html lang="zh-CN"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="dalio下载 map design https://www.notion.so/1-10f9a83cda19816485eff7a300fe0430 为什么不在ikd tree的基础上进行修改？其实也是试过的。 完整的设计 实际上，这个系统一开始有更完整的设计。 不退化时，通过点云分批降低耗时，且通过在线外参估计来标定其他传感器 退化后，加入其他传感器，松耦合的更新 还不行，">
-  <meta name="color-scheme" content="light">
+  <meta name="description" content="Degeneracy-aware LiDAR–inertial odometry with an adaptive multi-resolution map for efficient state estimation.">
+  <meta name="color-scheme" content="light dark">
   <link rel="canonical" href="https://haodazhu.com/2026/04/10/dalio-degeneracy-aware-lidar-inertial-odometry-with-adaptive-multi-resolution-mapping/">
-  <link rel="stylesheet" href="/assets/site.css">
   <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
-  <title>DALIO: Degeneracy-Aware LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping · haoda</title>
+  <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin="">
+  <script src="/assets/theme-init.js?v=reference-20261119"></script>
+  <link rel="stylesheet" href="/assets/site.css?v=reference-20261119">
+  <script src="/assets/site.js?v=reference-20261119" defer=""></script>
+  <title>DALIO: Degeneracy-Aware LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping · Haoda Zhu</title>
 </head>
-<body>
-  <a class="skip-link" href="#content">跳到正文</a>
-  <div class="wrap">
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="haoda 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>haoda</a>
-      <nav class="site-nav" aria-label="主导航"><a href="/about-me/">About Me</a><a href="/blog/" aria-current="page">My Research</a><a href="/随笔/">随笔</a></nav>
-    </header>
-    <main id="content"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/blog/">My Research</a></nav><header class="page-heading"><h1>DALIO: Degeneracy-Aware LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping</h1><p class="page-meta"><time datetime="2026-04-10T17:57:58+08:00">2026年4月10日</time></p></header><article class="article-body" data-original-post-id="379">
+<body id="top" data-page="article">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="monogram" href="/" aria-label="Haoda Zhu home"><img src="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg" width="38" height="38" alt="Haoda Zhu"></a>
+    <nav class="primary-nav" aria-label="Main navigation"><a href="/" aria-label="Home" title="Home"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10H15v-7H9v7H3Z"></path></svg><span class="nav-label">Home</span></a><a href="/about/" aria-label="About" title="About"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-5 16-5 16 0"></path></svg><span class="nav-label">About</span></a><a href="/publication/" aria-label="Publications" title="Publications"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v5h5M8 12h8M8 16h8"></path></svg><span class="nav-label">Publications</span></a><a href="/projects/" class="active" aria-current="page" aria-label="Projects" title="Projects"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><ellipse cx="12" cy="12" rx="4" ry="10"></ellipse><path d="M2 12h20"></path></svg><span class="nav-label">Projects</span></a><a href="/writing/" aria-label="Writing" title="Writing"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12H4v-5ZM14 5l5 5"></path></svg><span class="nav-label">Writing</span></a><button id="theme-toggle" class="icon-button" type="button" aria-label="Switch to dark theme" title="Switch theme" aria-pressed="false"><span class="theme-moon"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 13A9 9 0 0 1 11 3 9 9 0 1 0 21 13Z"></path></svg></span><span class="theme-sun"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"></path></svg></span></button></nav>
+    <span class="header-location">Hong Kong</span>
+  </header>
+  <main id="main" class="site-main"><article class="paper-detail"><header class="paper-detail-header"><span class="detail-venue">Design notes</span><h1>DALIO: Degeneracy-Aware LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping</h1><p class="page-meta"><time datetime="2026-04-10T17:57:58+08:00">2026年4月10日</time></p><p><a class="text-link" href="/publication/dalio/">Publication details</a></p></header><div class="article-body prose" data-original-post-id="379">
 <div><a id="wp-block-file--media-f809f01f-5e28-4961-a879-f3cbaa5b2678" href="/assets/files/838ef6f15ae5-dalio.pdf">dalio</a><a href="/assets/files/838ef6f15ae5-dalio.pdf" download="" aria-describedby="wp-block-file--media-f809f01f-5e28-4961-a879-f3cbaa5b2678">下载</a></div>
 
 
@@ -107,8 +108,8 @@
 
 
 <p></p>
-</article><nav class="article-end" aria-label="正文后导航"><a href="/blog/">返回My Research</a><a href="/archive/">全部文章</a></nav></main>
-    <footer class="site-footer"><span class="footer-signature">haoda</span><div class="footer-links"><a href="/archive/">全部文章</a><a href="/about-me/">About Me</a><a href="https://github.com/zhuhaoda/github-pages-demo" rel="noopener noreferrer">GitHub</a></div></footer>
-  </div>
-</body>
-</html>
+</div><nav class="article-end" aria-label="Article navigation"><a href="/projects/">Back to Projects</a><a href="/archive/">All entries</a></nav></article></main>
+  <footer class="site-footer"><span>© 2026 Haoda Zhu</span><span class="footer-credit">Layout inspired by <a href="https://siqi.app/" rel="noopener noreferrer">siqi.app</a></span><div class="footer-links"><a href="/archive/">Archive</a><a href="#top">Back to top</a></div></footer>
+
+
+</body></html>

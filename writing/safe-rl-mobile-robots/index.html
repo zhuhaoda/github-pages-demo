@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A research overview of control-barrier-function safety shields for multi-agent reinforcement learning when a mobile robot becomes uncontrollable.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://haodazhu.com/writing/safe-rl-mobile-robots/">
+  <link rel="icon" href="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg">
+  <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin="">
+  <script src="/assets/theme-init.js?v=reference-20261119"></script>
+  <link rel="stylesheet" href="/assets/site.css?v=reference-20261119">
+  <script src="/assets/site.js?v=reference-20261119" defer=""></script>
+  <title>Safe RL for mobile robots · Haoda Zhu</title>
+</head>
+<body id="top" data-page="article">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="monogram" href="/" aria-label="Haoda Zhu home"><img src="/assets/images/b61f4b905169-cropped-haoda.zhu_.jpg" width="38" height="38" alt="Haoda Zhu"></a>
+    <nav class="primary-nav" aria-label="Main navigation"><a href="/" aria-label="Home" title="Home"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10H15v-7H9v7H3Z"></path></svg><span class="nav-label">Home</span></a><a href="/about/" aria-label="About" title="About"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-5 16-5 16 0"></path></svg><span class="nav-label">About</span></a><a href="/publication/" aria-label="Publications" title="Publications"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v5h5M8 12h8M8 16h8"></path></svg><span class="nav-label">Publications</span></a><a href="/projects/" class="active" aria-current="page" aria-label="Projects" title="Projects"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><ellipse cx="12" cy="12" rx="4" ry="10"></ellipse><path d="M2 12h20"></path></svg><span class="nav-label">Projects</span></a><a href="/writing/" aria-label="Writing" title="Writing"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12H4v-5ZM14 5l5 5"></path></svg><span class="nav-label">Writing</span></a><button id="theme-toggle" class="icon-button" type="button" aria-label="Switch to dark theme" title="Switch theme" aria-pressed="false"><span class="theme-moon"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 13A9 9 0 0 1 11 3 9 9 0 1 0 21 13Z"></path></svg></span><span class="theme-sun"><svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"></path></svg></span></button></nav>
+    <span class="header-location">Hong Kong</span>
+  </header>
+  <main id="main" class="site-main"><article class="paper-detail"><header class="paper-detail-header"><span class="detail-venue">Research notes</span><h1>Safe RL for mobile robots</h1><p class="page-meta"><time datetime="2024-01-06T15:29:28+08:00">2024年1月6日</time></p></header><div class="article-body prose" data-original-post-id="106">
+<p>An increasing number of Autonomous Mobile&nbsp;Robots(AMRs)have been used in warehouses and factories in recent years.With the number of AMRs in a warehouse or factory increased,the risk of one of the AMRs being out of control is surging.Although Reinforcement learning(RL)-based approaches have achieved dramatic success in the motion planning of a large number of AMRs,RL-based motion planning approaches cannot provide a safety guarantee for the remaining functional AMRs if one of the AMRs is out of control.To this end,this paper integrates shields based on Control Barrier Functions(CBFs)into multi-agent RL and develops an RL-based motion planning approach with safety guarantees for functional AMRs when suffering an uncontrollable AMR.A CBF-based shield is designed for a functional AMR when suffering an uncontrollable AMR based on the kinematic model of a Differential Driven Robot,aiming to provide safety guarantees for the functional AMR.Experiments are conducted based on a simulated ware-house environment to evaluate the effectiveness of the developed safe RL-based motion planning approach in enhancing the safety of functional AMRs when suffering an uncontrollable AMR.</p>
+
+
+
+<p><strong>PPT show</strong></p>
+
+
+
+<div class="image-gallery"><li class="gallery-item"><figure><img loading="lazy" width="1024" height="576" alt="" src="/assets/images/685679a6b213-research_ppt_new_08.png" decoding="async"></figure></li><li class="gallery-item"><figure><img loading="lazy" width="1024" height="576" alt="" src="/assets/images/0349edfb318b-research_ppt_new_09-1.png" decoding="async"></figure></li><li class="gallery-item"><figure><img loading="lazy" width="1024" height="576" alt="" src="/assets/images/700a47de30bb-research_ppt_new_10-1.png" decoding="async"></figure></li></div>
+
+
+
+<p>this paper is is submitted to IEEE Transactions on Artificial Intelligence.</p>
+</div><nav class="article-end" aria-label="Article navigation"><a href="/projects/">Back to Projects</a><a href="/archive/">All entries</a></nav></article></main>
+  <footer class="site-footer"><span>© 2026 Haoda Zhu</span><span class="footer-credit">Layout inspired by <a href="https://siqi.app/" rel="noopener noreferrer">siqi.app</a></span><div class="footer-links"><a href="/archive/">Archive</a><a href="#top">Back to top</a></div></footer>
+
+
+</body></html>
