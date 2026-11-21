@@ -22,7 +22,7 @@ The archive distinguishes four peer-reviewed publications and one arXiv preprint
 
 Selected Work contains FAST-LIVO-RS and DALIO, in that order. Projects shows only the cable-driven humanoid arm, ROBOCON 2022, and Safe RL for mobile robots; other research records remain in the archive. Social links use the owner’s Google Scholar, LinkedIn, and GitHub profiles. The photo gallery preserves natural image ratios in a responsive multi-column layout, and the experience timeline uses explicit year/content columns with a stacked mobile layout.
 
-Each Selected Work entry includes an original research visualization: FAST-LIVO-RS Figure 4, the complete DALIO Figure 1 without its below-figure caption, and the original multi-LiDAR point-cloud image. The homepage badge above the name is removed; the FAST-LIVO-RS publication remains available. Experience is limited to PhD in robotics (2024–2028) and Robospectra (Strutt) (2023–2026), with the owner's founding-member and SLAM-team-lead role.
+Each Selected Work entry includes an original research visualization: FAST-LIVO-RS Figure 4, the complete DALIO Figure 1 without its below-figure caption. The homepage badge above the name is removed; the FAST-LIVO-RS publication remains available. Experience is limited to PhD in robotics (2024–2028) and Robospectra (Strutt) (2023–2026), with the owner's founding-member and SLAM-team-lead role.
 
 All 16 original articles and their inline images are retained. The old About/Research/Writing pages remain as readable legacy archives. Old WordPress upload paths are also preserved, including the DALIO PDF URL used by external citations.
 
