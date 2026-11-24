@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DALIO · 退化感知激光雷达–惯性里程计</title>
+  <meta name="description" content="DALIO 论文项目页：观看项目视频，了解退化感知里程计，查看 MultiMap 保留的多分辨率锚点和论文报告的定位精度。">
+  <meta name="theme-color" content="#b4d0ea">
+  <link rel="alternate" hreflang="en" href="index.html"><link rel="alternate" hreflang="zh-CN" href="zh.html">
+  <link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin.woff2" crossorigin>
+  <link rel="icon" href="mark.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+  <script type="module" src="navigation.js"></script>
+  <script type="module" src="page.js"></script>
+  <script type="module" src="accuracy.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="mast"><div class="wrap nav-inner">
+  <a class="brand" href="#main" aria-label="DALIO 页首"><img src="mark.svg" alt="" width="30" height="30"><span>DALIO</span></a>
+  <nav class="mast-nav" aria-label="页内导航"><a href="#film">视频</a><a href="#abstract">摘要</a><a href="#method">方法</a><a href="#maps">地图</a><a href="#accuracy">实验</a></nav>
+  <div class="nav-utilities"><a data-lang-link hreflang="en" lang="en" href="index.html">English</a></div>
+</div></header>
+<main id="main">
+  <section class="hero"><div class="wrap hero-layout">
+    <div class="intro">
+      <p class="eyebrow"><span class="line"></span> 论文已录用 <span class="meta-sep">/</span> IEEE/ASME T-Mech</p>
+      <h1><span class="display">DALIO</span><span class="paper-title">融合退化感知与自适应多分辨率建图的高效激光雷达–惯性里程计</span></h1>
+      <p class="authors">Haoda Zhu<sup>1,*</sup>、Fangcheng Zhu<sup>1,*</sup>、Yuhao Fang<sup>2</sup>、Jiale Han<sup>1</sup>、Yunfan Ren<sup>1</sup>、Siqi Liang<sup>1</sup>、Longji Yin<sup>1</sup>、Jie Mei<sup>2</sup>、Fu Zhang<sup>1,†</sup></p>
+      <p class="affils"><sup>1</sup> 香港大学<br><sup>2</sup> 哈尔滨工业大学（深圳）</p>
+      <p class="notes">* 同等贡献 <span>·</span> † 通讯作者</p>
+      <div class="actions"><a class="btn primary" href="media/paper.pdf"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h6.3l3.7 4v11H5zM11 3v4h4M7.5 10h5M7.5 13h4"/></svg>阅读论文</a><a class="btn ghost" href="#maps"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 7 4v8l-7 4-7-4V6zM3.5 6.3l6.5 3.8 6.5-3.8M10 10v7.5"/></svg>探索 MultiMap</a></div>
+    </div>
+    <figure id="film" class="film-panel">
+      <div class="film-label"><span>项目视频</span><span>05:25 <span>/</span> 1080p</span></div>
+      <div class="film-screen"><video id="project-film" controls playsinline preload="none" width="1920" height="1080" poster="media/film-poster.jpg" aria-label="DALIO 论文补充视频（无声）"><source src="media/dalio-film.mp4" type="video/mp4">当前浏览器无法播放此视频。</video>
+        <button id="film-play" class="play" aria-label="播放 DALIO 项目视频" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg></button></div>
+    </figure>
+    <details id="abstract" class="abstract-note" open>
+      <summary><h2>论文摘要</h2></summary>
+      <p>本文提出 DALIO，一种新的激光雷达–惯性里程计（LIO）框架。它在显著降低计算复杂度的同时，仍能在多种环境中稳健定位。DALIO 的核心思路是“按需计算”：其退化感知批次选择模块实时评估环境对位姿的几何约束，动态调整参与扫描配准的点数。当某些方向上的约束不足时，退化抑制模块会滤除观测在这些方向上对状态更新的影响，避免退化方向上的噪声干扰更新，使状态估计更稳定。DALIO 还采用了自适应多分辨率建图策略 MultiMap：保留关键的原始观测点，仅在需要的区域提高地图分辨率，从而减少内存占用，并支持在大尺度和小尺度场景中精确定位。作者在公开数据集、多种无人机平台和计算资源受限的嵌入式系统上进行了广泛评估。结果表明，DALIO 保持了有竞争力的定位精度，与 FAST-LIO2 相比，运行时间最多可缩短 68%，并能在不同硬件平台上实时运行。</p>
+    </details>
+  </div></section>
+
+  <section id="method" class="method band"><div class="wrap">
+    <div class="section-top"><div><p class="eyebrow">方法</p><h2>按需计算</h2></div>
+      <p>一次位姿更新需要多少个点？DALIO 根据当前扫描的几何结构来判断。已有观测足以约束位姿时，就不再为配准追加点；地图更新仍使用来自整帧扫描的观测。</p></div>
+    <figure class="paper-figure method-figure"><a href="media/method.webp" aria-label="查看系统框图原图"><img src="media/method.webp" alt="DALIO 系统框图：从 IMU 状态传播、激光点批次选择和状态更新到 MultiMap 八叉树建图。" loading="lazy" width="2050" height="832"></a></figure>
+    <div class="method-steps">
+      <article><h3>分批选择配准点</h3><p>将去畸变后的扫描点分批处理。一旦已有观测能充分约束位姿，就停止追加批次，用选中的点更新位姿。</p></article>
+      <article><h3>抑制退化方向的修正</h3><p>如果用完所有批次后仍存在退化，就抑制激光雷达观测在弱约束方向上对位姿的修正。</p></article>
+      <article><h3>按需细分体素</h3><p>粗体素足以描述局部几何时，只保留一个有代表性的观测点；如果局部点云不能用单个平面描述，就继续细分，保留其几何细节。</p></article>
+    </div>
+  </div></section>
+
+  <section class="overview wrap" aria-labelledby="overview-title">
+    <div class="section-top heading-only"><div><p class="eyebrow">实地实验</p><h2 id="overview-title">从室内飞向室外，再返回室内</h2></div></div>
+    <figure class="paper-figure flight-figure">
+      <a href="media/flight.webp" aria-label="查看室内外飞行实验原图"><img src="media/flight.webp" alt="论文概览图：按速度着色的室外飞行轨迹、室内场景和多分辨率点云地图。" loading="lazy" width="2050" height="1700"></a>
+      <figcaption>
+        <p class="flight-story">无人机从建筑物内飞出，在室外绕行一圈后返回室内。全程 181&nbsp;m，最高速度为 5&nbsp;m/s。MultiMap 保留了室内的精细结构，又不必用最高分辨率存储整个室外场景。</p>
+        <p class="flight-key"><span>论文插图</span> 轨迹颜色表示飞行速度。MultiMap 局部图使用另一套色标：绿色表示分辨率较低，红色表示分辨率较高。</p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section id="maps" class="atlas wrap">
+    <div class="section-top heading-only"><div><p class="eyebrow">交互式地图</p><h2>探索 MultiMap</h2></div></div>
+    <div id="explorer" class="explorer">
+      <div class="atlas-top"><div class="select-wrap"><label for="scene">录制序列</label><select id="scene" disabled><option>正在加载序列…</option></select></div>
+        <div class="atlas-actions"><a href="#accuracy">精度对比表</a><div class="view-buttons" aria-label="视角控制"><button type="button" id="oblique" aria-pressed="true">斜视</button><button type="button" id="overhead" aria-pressed="false">俯视</button></div></div></div>
+      <div class="viewport"><canvas id="cloud" tabindex="0" aria-label="交互式三维点云地图。拖动或按方向键可旋转，按加减号可缩放，按 R 可复位。"></canvas>
+        <div class="viewport-key" aria-hidden="true"><span></span><b>八叉树深度</b></div>
+        <div id="load-state" role="status" class="load-state">正在加载点云…</div>
+        <div class="camera-tools"><button type="button" id="zoom-in" title="放大" aria-label="放大">+</button><button type="button" id="zoom-out" title="缩小" aria-label="缩小">−</button><button type="button" id="reset" title="重置视角" aria-label="重置视角"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4v4h4M4.6 7.2a6.1 6.1 0 1 1-.1 5"/></svg></button></div>
+      </div>
+      <div class="atlas-controls"><div class="layer-group" id="layers"><span class="control-title">显示图层</span>
+        <label class="layer l0"><input type="checkbox" data-level="0" checked><span class="swatch"></span><span class="edge">0.5 m</span></label>
+        <label class="layer l1"><input type="checkbox" data-level="1" checked><span class="swatch"></span><span class="edge">0.25 m</span></label>
+        <label class="layer l2"><input type="checkbox" data-level="2" checked><span class="swatch"></span><span class="edge">0.125 m</span></label>
+        </div><span class="hint">拖动旋转 · 按住 Shift 拖动平移 · 滚轮或双指缩放</span></div>
+    </div>
+    <section id="accuracy" class="accuracy-card" aria-labelledby="accuracy-title">
+      <header class="accuracy-header">
+        <div><p class="eyebrow">基准测试</p><h3 id="accuracy-title">里程计精度</h3></div>
+        <a class="accuracy-source" href="media/paper.pdf#page=7">论文表 II、III</a>
+      </header>
+      <p class="accuracy-intro">对于有真值轨迹的序列，论文用均方根误差（RMSE）衡量估计轨迹与真值的偏差；对于回到起点的序列，则用首尾误差（E2E）衡量估计轨迹起点与终点之间的距离。两项误差的单位均为米，越小越好。</p>
+      <div id="accuracy-switch" class="accuracy-switch" aria-label="精度指标" hidden>
+        <button type="button" id="metric-tab-rmse" data-metric-tab="rmse" aria-controls="accuracy-rmse">真值轨迹 <span>RMSE</span></button>
+        <button type="button" id="metric-tab-e2e" data-metric-tab="e2e" aria-controls="accuracy-e2e">回环序列 <span>E2E</span></button>
+      </div>
+      <!-- accuracy-tables:start -->
+      <div class="metric-panel" id="accuracy-rmse" data-metric="rmse">
+        <h4 id="accuracy-rmse-heading">真值轨迹 · RMSE（m）</h4>
+        <div class="accuracy-scroll" tabindex="0" role="region" aria-labelledby="accuracy-rmse-heading">
+          <table class="accuracy-table">
+            <caption class="visually-hidden">论文表 II：真值轨迹 · RMSE（m）。误差越小越好。</caption>
+            <thead><tr><th scope="col">序列</th><th scope="col" class="primary-method">DALIO</th><th scope="col">DALIO<sup>†</sup></th><th scope="col">DALIO<sup>*</sup></th><th scope="col">FAST-LIO2</th><th scope="col">FASTER-LIO</th><th scope="col">VoxelMap</th><th scope="col">DLIO</th><th scope="col">DALI-SLAM</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">nclt1</th><td class="primary-method">1.34</td><td>1.35</td><td>1.31</td><td><strong>1.21</strong></td><td>1.24</td><td>1.28</td><td>1.26</td><td>1.48</td></tr>
+              <tr><th scope="row">nclt2</th><td class="primary-method">1.56</td><td>1.55</td><td>1.61</td><td>2.03</td><td>1.59</td><td><strong>1.44</strong></td><td>1.62</td><td>2.14</td></tr>
+              <tr><th scope="row">nclt3</th><td class="primary-method">0.98</td><td>1.00</td><td>0.92</td><td><strong>0.88</strong></td><td>1.03</td><td>0.99</td><td>1.05</td><td>0.94</td></tr>
+              <tr><th scope="row">ncd1</th><td class="primary-method">0.33</td><td>0.34</td><td>0.32</td><td>0.35</td><td>0.32</td><td><strong>0.31</strong></td><td>0.33</td><td>0.37</td></tr>
+              <tr><th scope="row">ncd2</th><td class="primary-method">0.32</td><td>0.31</td><td>0.35</td><td>0.35</td><td>0.38</td><td>0.33</td><td><strong>0.30</strong></td><td>0.36</td></tr>
+              <tr><th scope="row">ncd3</th><td class="primary-method">0.12</td><td>0.12</td><td>0.12</td><td><strong>0.11</strong></td><td>0.14</td><td>0.13</td><td>0.13</td><td>0.12</td></tr>
+              <tr><th scope="row">m3o1</th><td class="primary-method"><strong>0.20</strong></td><td>0.21</td><td>0.21</td><td>0.23</td><td>0.25</td><td>0.24</td><td>0.26</td><td>0.22</td></tr>
+              <tr><th scope="row">m3o2</th><td class="primary-method"><strong>0.19</strong></td><td>0.20</td><td><strong>0.19</strong></td><td>0.30</td><td>0.20</td><td>0.94</td><td>0.21</td><td>0.28</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="metric-panel" id="accuracy-e2e" data-metric="e2e">
+        <h4 id="accuracy-e2e-heading">回环序列 · E2E（m）</h4>
+        <div class="accuracy-scroll" tabindex="0" role="region" aria-labelledby="accuracy-e2e-heading">
+          <table class="accuracy-table">
+            <caption class="visually-hidden">论文表 III：回环序列 · E2E（m）。误差越小越好。</caption>
+            <thead><tr><th scope="col">序列</th><th scope="col" class="primary-method">DALIO</th><th scope="col">DALIO<sup>†</sup></th><th scope="col">DALIO<sup>*</sup></th><th scope="col">FAST-LIO2</th><th scope="col">FASTER-LIO</th><th scope="col">VoxelMap</th><th scope="col">DLIO</th><th scope="col">DALI-SLAM</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">hku1</th><td class="primary-method">0.04</td><td>0.04</td><td>0.04</td><td><strong>0.03</strong></td><td>0.11</td><td>0.04</td><td>0.12</td><td>0.05</td></tr>
+              <tr><th scope="row">hku2</th><td class="primary-method">0.04</td><td>0.06</td><td><strong>0.03</strong></td><td>0.04</td><td>0.04</td><td>0.04</td><td>0.05</td><td>0.09</td></tr>
+              <tr><th scope="row">hku3</th><td class="primary-method"><strong>0.03</strong></td><td><strong>0.03</strong></td><td>0.04</td><td>1.96</td><td>2.05</td><td>0.10</td><td>2.12</td><td>1.88</td></tr>
+              <tr><th scope="row">ust1</th><td class="primary-method"><strong>0.65</strong></td><td>0.91</td><td>0.93</td><td>3.38</td><td>3.87</td><td>4.91</td><td>3.96</td><td>3.52</td></tr>
+              <tr><th scope="row">ust2</th><td class="primary-method">1.32</td><td>1.17</td><td><strong>0.97</strong></td><td>2.93</td><td>2.77</td><td>3.44</td><td>2.84</td><td>3.10</td></tr>
+              <tr><th scope="row">ust3</th><td class="primary-method">0.04</td><td>0.05</td><td><strong>0.02</strong></td><td>0.03</td><td>0.04</td><td>0.04</td><td>0.05</td><td>0.04</td></tr>
+              <tr><th scope="row">m3i1</th><td class="primary-method"><strong>0.04</strong></td><td>0.56</td><td>0.54</td><td>1.03</td><td>0.98</td><td>3.75</td><td>1.04</td><td>1.08</td></tr>
+              <tr><th scope="row">m3i2</th><td class="primary-method"><strong>0.45</strong></td><td>1.86</td><td><strong>0.45</strong></td><td>3.43</td><td>5.53</td><td>–</td><td>0.68</td><td>1.36</td></tr>
+              <tr><th scope="row">m3i3</th><td class="primary-method">0.05</td><td>0.06</td><td>0.04</td><td><strong>0.03</strong></td><td>0.04</td><td>0.04</td><td>0.05</td><td>0.04</td></tr>
+              <tr><th scope="row">dege1</th><td class="primary-method"><strong>1.01</strong></td><td>1.58</td><td>7.35</td><td>3.13</td><td>2.28</td><td>12.85</td><td>7.41</td><td>7.02</td></tr>
+              <tr><th scope="row">dege2</th><td class="primary-method"><strong>1.32</strong></td><td>8.12</td><td>5.86</td><td>6.45</td><td>15.82</td><td>–</td><td>5.90</td><td>6.58</td></tr>
+              <tr><th scope="row">self1</th><td class="primary-method"><strong>0.06</strong></td><td>0.09</td><td>0.08</td><td>0.11</td><td>0.07</td><td>0.09</td><td>0.08</td><td>0.12</td></tr>
+              <tr><th scope="row">self2</th><td class="primary-method"><strong>0.04</strong></td><td>2.62</td><td>0.16</td><td>9.51</td><td>–</td><td>–</td><td>–</td><td>9.51</td></tr>
+              <tr><th scope="row">self3</th><td class="primary-method">0.02</td><td>0.60</td><td>0.05</td><td>1.09</td><td>0.29</td><td><strong>0.01</strong></td><td>0.11</td><td>1.03</td></tr>
+              <tr><th scope="row">self4</th><td class="primary-method">0.03</td><td>0.17</td><td><strong>0.02</strong></td><td>0.27</td><td>0.44</td><td>4.35</td><td>0.06</td><td>0.56</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- accuracy-tables:end -->
+      <div class="accuracy-notes">
+        <p><strong>粗体</strong>标出每条序列的最低误差，包括并列项。短横线（–）表示论文未报告结果。</p>
+        <p>DALIO<sup>†</sup> 关闭退化抑制；DALIO<sup>*</sup> 使用全部扫描点进行配准。DALI-SLAM 的评测仅使用其前端里程计模块。</p>
+      </div>
+    </section>
+    <noscript><style>.explorer{display:none}</style><p>启用 JavaScript 后即可与地图交互。</p></noscript>
+  </section>
+
+  <section id="results" class="results band"><div class="wrap">
+    <div class="section-top heading-only"><div><p class="eyebrow">论文实验</p><h2>哪些区域需要更精细的地图？</h2></div></div>
+    <div class="result-layout"><figure class="paper-figure result-fig"><a href="media/map-comparison.webp" aria-label="查看地图消融实验原图"><img src="media/map-comparison.webp" alt="地图对比图：累积扫描点云、MultiMap、粗细两种固定分辨率的 ikd-Tree，以及各地图的规模变化。" width="2050" height="1723" loading="lazy"></a><figcaption><span>论文插图</span> 右上图是 MultiMap 地图。左上图是多帧扫描叠加得到的点云，并非估计器导出的地图。</figcaption></figure>
+    <div class="result-text"><h3>仅更换地图后端的消融实验</h3><p>每格依次列出回环序列的平均首尾误差（m）和单帧耗时（ms）。两项指标均越小越好。</p>
+    <div class="table-scroll"><table><caption class="visually-hidden">论文表 IV：平均首尾误差（E2E）和单帧耗时</caption><thead><tr><th>地图后端</th><th>HKU</th><th>UST</th><th>Self</th></tr></thead><tbody>
+      <tr class="ours"><th>MultiMap</th><td>0.04 / 12.50</td><td>0.64 / 14.63</td><td>0.08 / 18.10</td></tr><tr><th>ikd-Tree High</th><td>0.44 / 16.22</td><td>2.21 / 19.17</td><td>0.64 / 22.17</td></tr><tr><th>ikd-Tree Low</th><td>0.70 / 12.56</td><td>2.12 / 16.46</td><td>2.75 / 20.56</td></tr></tbody></table></div>
+      <p class="table-note">两种固定分辨率的基线分别为 High（0.125&nbsp;m）和 Low（0.5&nbsp;m）。各数据集的完整指标和实验平台说明见<a href="media/paper.pdf">论文</a>。</p>
+    </div></div>
+    <div class="forest-block"><div><p class="eyebrow">独立实地实验</p><h3>林间飞行</h3><p>在另一项高速飞行实验中，无人机沿五个航点飞行两圈，最高速度达到 8&nbsp;m/s。</p></div>
+      <a href="media/forest.webp" aria-label="查看林间飞行实验原图"><img src="media/forest.webp" alt="林间飞行实验的点云、按速度着色的轨迹、规划界面和实拍画面。" loading="lazy" width="2050" height="824"></a></div>
+  </div></section>
+  <footer class="wrap footer"><div><p class="eyebrow">研究项目</p><strong>DALIO</strong><p>IEEE/ASME Transactions on Mechatronics · 录用稿</p></div><div class="footer-links"><a href="media/paper.pdf">论文 PDF</a><a href="#main">回到顶部</a></div></footer>
+</main>
+</body></html>

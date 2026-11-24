@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="FAST-LIVO-RS 论文项目页：论文视频、方法、彩色点云与重建实验。"><meta name="theme-color" content="#b4d0ea">
+<title>FAST-LIVO-RS · 面向卷帘快门的激光雷达–惯性–视觉里程计</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="alternate" hreflang="en" href="index.html"><link rel="alternate" hreflang="zh-CN" href="zh.html">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/geist-latin.woff2"><link rel="stylesheet" href="project.css"><script defer src="project.js"></script>
+</head><body><a class="skip" href="#content">跳到正文</a>
+<header class="mast"><div class="wrap mast-inner"><a class="brand" href="#content"><img src="assets/mark.svg" alt="" width="30" height="30"><span>FAST-LIVO-RS</span></a>
+<nav class="mast-nav" aria-label="页内导航"><a href="#film">视频</a><a href="#abstract">摘要</a><a href="#method">方法</a><a href="#maps">地图</a><a href="#results">实验</a><a href="#citation">引用</a></nav>
+<div class="utilities"><a data-lang-link href="index.html" lang="en">English</a><button type="button" class="theme" data-theme-toggle aria-label="切换配色" title="切换配色"><svg class="icon icon-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14A8.8 8.8 0 0 1 10 3.5 8.8 8.8 0 1 0 20.5 14Z"/></svg><svg class="icon icon-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.8"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div></div></header>
+<main id="content">
+<div class="hero-band"><div class="wrap">
+<header class="intro"><p class="venue">IEEE Robotics and Automation Letters <span>/</span> 2026</p>
+<h1><span class="acronym">FAST-LIVO-RS</span><span class="paper-title">面向卷帘快门的激光雷达–惯性–视觉里程计</span></h1>
+<p class="authors"><a href="https://haodazhu.com/">Haoda Zhu</a><sup>1</sup>, <a href="https://orcid.org/0009-0007-3380-424X">Xiangyu Hong</a><sup>2</sup>, <a href="https://orcid.org/0000-0001-5974-3771">Chunran Zheng</a><sup>1</sup>, <a href="https://orcid.org/0000-0001-8431-4098">Haotian Li</a><sup>1</sup>, <a href="https://orcid.org/0000-0002-8636-4168">Fu Zhang</a><sup>1</sup></p><p class="affils"><span><sup>1</sup> 香港大学机械工程系</span><span><sup>2</sup> Spatial Robotics Limited</span></p>
+<div class="actions"><a class="action primary" href="https://doi.org/10.1109/LRA.2026.3747596"><svg class="icon icon-paper" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l3 3V20H7z"/><path d="M14 3.5V7h3M9.5 11h5M9.5 14h5"/></svg>阅读论文</a><a class="action" href="https://haodazhu.com/assets/files/fast-livo-rs.pdf"><svg class="icon icon-pdf" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m-4-4 4 4 4-4M5 15v5h14v-5"/></svg>作者版 PDF</a><a class="action" href="#maps"><svg class="icon icon-layers" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5zm-9 9 9 5 9-5m-18 4 9 5 9-5"/></svg>地图对比</a></div></header>
+<figure id="film" class="film-panel" aria-labelledby="film-label">
+<div class="media-bar"><b id="film-label">论文视频</b><span>02:42 <i>/</i> 1080p</span></div>
+<div class="film-screen"><video id="paper-video" controls controlslist="nodownload" playsinline preload="none" width="1920" height="1080" poster="assets/video/poster.jpg" aria-label="FAST-LIVO-RS 论文视频"><source src="assets/video/fast-livo-rs.mp4" type="video/mp4"></video>
+<button id="film-play" class="film-play" type="button" aria-label="播放论文视频" hidden><span aria-hidden="true"><svg viewBox="0 0 28 28"><path d="m8 5 15 9-15 9z"/></svg></span></button></div>
+<p id="film-status" role="status"></p></figure>
+<details id="abstract" class="abstract" open><summary><h2>摘要</h2></summary><p>本文提出 FAST-LIVO-RS，一种面向卷帘快门（RS）相机的直接式激光雷达–惯性–视觉里程计系统。当卷帘快门图像按全局快门（GS）模型处理时，不同图像行的成像几何不再一致。在直接式里程计系统中，这会影响光度优化和点云着色，并降低系统在快速运动下的鲁棒性。为刻画传感器逐行读出一帧图像期间的运动，FAST-LIVO-RS 在顺序误差状态迭代卡尔曼滤波器（ESIKF）中引入自适应状态增广：在 IMU 状态传播过程中，根据估计的角加速度和线加速度动态插入克隆状态，以适应运动变化的分段线性模型近似帧内轨迹。在此基础上，系统通过不动点迭代求解投影对应的行时刻，并将雅可比矩阵分配到相邻克隆状态所定义的区间两端，从而在每一行对应的相机位姿处线性化光度残差，完成与逐行成像一致的直接视觉更新。视觉地图同样采用逐行几何来维护图像块、更新参考帧，不再假设整帧共享读出结束时的位姿。我们在自采卷帘快门数据集和四项 GrandTour 任务上评估了 FAST-LIVO-RS，并使用同步的卷帘快门与全局快门相机进行对照实验和三维重建。结果表明，对逐行读出时刻建模能提高系统在卷帘快门序列上的鲁棒性，其定位和重建质量与使用同步全局快门相机的 FAST-LIVO2 相当。</p></details>
+</div></div>
+<section id="method" class="band"><div class="wrap section-pad">
+<h2>方法</h2>
+<div class="timing-layout"><div class="shutter-intro">
+<div><h3>什么是卷帘快门？</h3>
+<p>全局快门相机的所有像素行同时曝光，卷帘快门相机则逐行曝光。看图 2 的下半部分：从首行到末行，每一行的曝光时间窗都比上一行晚一些。论文中的两套手持设备首末行的曝光时刻相差 49.6 ms。如果相机在这段时间内运动，同一帧的不同行便对应不同的相机位姿。</p></div>
+<div><h3>为什么里程计需要处理它？</h3>
+<p>直接法用对应图像块的亮度差（光度残差）更新位姿。快速运动时，若用同一个相机位姿投影所有激光地图点，有些点就会落到错误的像素上，算法比较的也不再是同一处纹理。点云着色同样依赖这个投影：靠近高对比边缘的点，可能取到边缘另一侧的颜色。</p></div></div>
+<figure class="paper-figure timing-figure" id="row-timing"><a href="assets/figures/rolling-shutter-timing.pdf" target="_blank" rel="noopener" aria-label="打开论文图 2 多传感器时序图 PDF">
+<img src="assets/figures/rolling-shutter-timing.png" width="2000" height="1512" alt="IMU、激光雷达与相机共享同一时间轴；下方相机各行的曝光时间窗从第 0 行到末行逐步后移。" loading="lazy" decoding="async"></a>
+<figcaption>图 2. IMU 状态传播、激光雷达点去畸变与相机逐行曝光的时序。 <i>T<sub>r</sub></i> 表示首末行曝光时刻的间隔，不是单行的曝光时长。</figcaption></figure></div>
+<div class="method-system"><h3>FAST-LIVO-RS 如何利用逐行曝光时刻？</h3>
+<p>系统在 IMU 传播过程中估计帧内运动，用像素行曝光时刻的位姿计算视觉残差，再用同一套逐行投影维护图像块并给地图上色。</p></div>
+<figure class="paper-figure"><a href="assets/figures/system-overview.pdf" target="_blank" rel="noopener" aria-label="打开论文系统图原始 PDF">
+<img src="assets/figures/system-overview.png" width="3200" height="1299" alt="论文图 1：IMU 状态传播与自适应克隆、激光更新、逐行视觉更新与建图。" loading="lazy" decoding="async"></a>
+<figcaption>图 1. FAST-LIVO-RS 系统总览。</figcaption></figure>
+<div class="method-steps"><article><h3>自适应状态增广</h3><p>在 IMU 传播过程中，根据估计的角加速度与线加速度，在图像读出期间按需插入克隆位姿。</p></article><article><h3>逐行时刻视觉更新</h3><p>通过不动点投影求出每个光度残差对应的行时刻和相机位姿，再将雅可比分配到相应克隆区间的两个端点。</p></article><article><h3>行时刻一致的视觉建图</h3><p>参考图像块维护、视觉地图点更新和激光点云取色使用同一套卷帘几何。</p></article></div></div></section>
+<section id="maps" class="wrap section-pad maps"><h2>定性结果</h2>
+<figure class="map-pair" id="map-comparison" data-scene="jt-o3" aria-label="彩色点云对比">
+<div class="map-toolbar"><span id="selector-label">序列</span><div class="scene-selector" role="group" aria-labelledby="selector-label"><button type="button" data-scene-select="jt-o3" data-width="1872" data-height="556" data-visible-height="556" data-alternative="整幅室外人物壁画" aria-controls="map-comparison" aria-pressed="true">JT-O3</button><button type="button" data-scene-select="jt-i1" data-width="2052" data-height="1044" data-visible-height="1044" data-alternative="室内蓝色大屏" aria-controls="map-comparison" aria-pressed="false">JT-I1</button><button type="button" data-scene-select="avia-i1" data-width="2052" data-height="1044" data-visible-height="402" data-alternative="大厅主展墙" aria-controls="map-comparison" aria-pressed="false">AVIA-I1</button><button type="button" data-scene-select="avia-o2" data-width="1736" data-height="684" data-visible-height="684" data-alternative="室外拼贴壁画" aria-controls="map-comparison" aria-pressed="false">AVIA-O2</button></div></div>
+<div class="map-body"><div class="wipe-legend"><a class="source-rs" data-original="rs" href="assets/maps/jt-o3-rs.png" target="_blank" rel="noopener" title="打开无损原图">FAST-LIVO-RS</a><span class="wipe-hint" id="wipe-hint">拖动对比</span><a class="source-fast" data-original="fast" href="assets/maps/jt-o3-fast.png" target="_blank" rel="noopener" title="打开无损原图">FAST-LIVO2</a></div>
+<div class="wipe" data-compare style="aspect-ratio:1872/556"><div class="wipe-layer wipe-rs"><img data-method="rs" src="assets/maps/jt-o3-rs-1120.webp" srcset="assets/maps/jt-o3-rs-640.webp 640w, assets/maps/jt-o3-rs-1120.webp 1120w" sizes="(min-width: 1200px) 1110px, 94vw" width="1872" height="556" alt="FAST-LIVO-RS — 整幅室外人物壁画" loading="lazy" decoding="async" draggable="false"></div><div class="wipe-layer wipe-fast"><img data-method="fast" src="assets/maps/jt-o3-fast-1120.webp" srcset="assets/maps/jt-o3-fast-640.webp 640w, assets/maps/jt-o3-fast-1120.webp 1120w" sizes="(min-width: 1200px) 1110px, 94vw" width="1872" height="556" alt="FAST-LIVO2 — 整幅室外人物壁画" loading="lazy" decoding="async" draggable="false"></div>
+<div class="wipe-line" aria-hidden="true"><span class="wipe-grip"><svg viewBox="0 0 24 18" width="24" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 5-4 4 4 4m8-8 4 4-4 4"/></svg></span></div>
+<input class="wipe-input" data-compare-range type="range" min="0" max="100" step="1" value="50" aria-label="JT-O3 图片分界" aria-describedby="wipe-hint" hidden></div></div>
+<p class="sr" id="map-status" role="status" aria-live="polite"></p></figure>
+<noscript><p>各序列的无损原图：</p><ul><li>JT-O3 · <a href="assets/maps/jt-o3-rs.png">FAST-LIVO-RS</a> / <a href="assets/maps/jt-o3-fast.png">FAST-LIVO2</a></li><li>JT-I1 · <a href="assets/maps/jt-i1-rs.png">FAST-LIVO-RS</a> / <a href="assets/maps/jt-i1-fast.png">FAST-LIVO2</a></li><li>AVIA-I1 · <a href="assets/maps/avia-i1-rs.png">FAST-LIVO-RS</a> / <a href="assets/maps/avia-i1-fast.png">FAST-LIVO2</a></li><li>AVIA-O2 · <a href="assets/maps/avia-o2-rs.png">FAST-LIVO-RS</a> / <a href="assets/maps/avia-o2-fast.png">FAST-LIVO2</a></li></ul></noscript></section>
+<section id="undistortion" class="wrap section-pad undistortion" aria-labelledby="undistortion-title">
+<div class="section-head"><h2 id="undistortion-title">图像去畸变</h2>
+<p>FAST-LIVO-RS 利用估计出的逐行相机旋转，将图像重映射到读出结束时的相机位姿，以校正快速转动时竖直结构出现的剪切和倾斜。</p></div>
+<figure class="paper-figure rs-example"><a href="assets/figures/rolling-shutter-example.pdf" target="_blank" rel="noopener" aria-label="打开论文图 7 图像去畸变示例原图 PDF">
+<img src="assets/figures/rolling-shutter-example.png" width="2160" height="719" alt="快速转动时拍摄的一组壁画图像：上排（a）为原始卷帘快门图像，下排（b）为相应帧的去畸变结果。" loading="lazy" decoding="async"></a>
+<figcaption>图 7. 上排（a）为原始卷帘快门图像，下排（b）为同一组图像的去畸变结果。黑色区域在原图中没有对应的可采样像素。</figcaption></figure></section>
+<section id="results" class="band"><div class="wrap section-pad"><div class="section-head"><h2>重建结果</h2>
+<p>论文在六段同步采集的 JT 数据上使用同一 3DGUT 后端，对比三种前端配置。PSNR 与 SSIM 评估的是测试视角的重建图像。</p></div>
+<div class="table-frame"><table><caption>表 IV · 重建质量（PSNR，单位 dB / SSIM）</caption>
+<thead><tr><th scope="col">序列</th><th scope="col">FAST-LIVO-RS <span>+ RS</span></th><th scope="col">FAST-LIVO2 <span>+ RS</span></th><th scope="col">FAST-LIVO2 <span>+ GS</span></th></tr></thead>
+<tbody><tr><th scope="row">JT-O1</th><td>25.12 <span>/</span> 0.778</td><td>—</td><td>26.06 <span>/</span> 0.770</td></tr><tr><th scope="row">JT-O2</th><td>24.21 <span>/</span> 0.742</td><td>21.70 <span>/</span> 0.719</td><td>25.56 <span>/</span> 0.755</td></tr><tr><th scope="row">JT-O3</th><td>29.43 <span>/</span> 0.857</td><td>28.82 <span>/</span> 0.829</td><td>29.67 <span>/</span> 0.850</td></tr><tr><th scope="row">JT-I1</th><td>31.61 <span>/</span> 0.896</td><td>29.68 <span>/</span> 0.845</td><td>31.96 <span>/</span> 0.882</td></tr><tr><th scope="row">JT-M1</th><td>26.51 <span>/</span> 0.862</td><td>24.65 <span>/</span> 0.810</td><td>26.06 <span>/</span> 0.857</td></tr><tr><th scope="row">JT-M2</th><td>23.90 <span>/</span> 0.855</td><td>20.49 <span>/</span> 0.809</td><td>24.58 <span>/</span> 0.865</td></tr></tbody></table></div><p class="table-note">RS：卷帘快门；GS：全局快门。破折号表示未得到有效重建。</p></div></section>
+<section id="citation" class="wrap section-pad"><h2>引用</h2><p class="cite-meta">IEEE Robotics and Automation Letters, 11(12), 14652–14659 (2026). <a href="https://doi.org/10.1109/LRA.2026.3747596">DOI: 10.1109/LRA.2026.3747596</a></p>
+<div class="bib-card"><div class="bib-bar"><b>BibTeX</b><div><a href="citation.bib" download>下载 .bib</a><button type="button" data-copy-cite hidden><svg class="icon icon-copy" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V4a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h4"/></svg><span>复制</span></button></div></div><pre tabindex="0"><code id="bibtex">@article{zhu2026fastlivors,
+  author  = {Zhu, Haoda and Hong, Xiangyu and Zheng, Chunran and Li, Haotian and Zhang, Fu},
+  title   = {Rolling-Shutter Aware {LiDAR}-Inertial-Visual Odometry},
+  journal = {IEEE Robotics and Automation Letters},
+  year    = {2026},
+  volume  = {11},
+  number  = {12},
+  pages   = {14652--14659},
+  doi     = {10.1109/LRA.2026.3747596}
+}</code></pre><span class="sr" id="copy-status" role="status"></span></div></section>
+</main><footer><div class="wrap footer-inner"><div><b>FAST-LIVO-RS</b><span> IEEE RA-L · 2026</span></div><a href="https://haodazhu.com/">Haoda Zhu</a><a href="#content">回到顶部</a></div></footer></body></html>

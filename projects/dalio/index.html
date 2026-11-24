@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DALIO · Degeneracy-aware LiDAR-inertial odometry</title>
+  <meta name="description" content="DALIO research project: watch the project film and inspect the multiresolution anchors retained by MultiMap.">
+  <meta name="theme-color" content="#b4d0ea">
+  <link rel="alternate" hreflang="en" href="index.html"><link rel="alternate" hreflang="zh-CN" href="zh.html">
+  <link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin.woff2" crossorigin>
+  <link rel="icon" href="mark.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+  <script type="module" src="navigation.js"></script>
+  <script type="module" src="page.js"></script>
+  <script type="module" src="accuracy.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="mast"><div class="wrap nav-inner">
+  <a class="brand" href="#main" aria-label="DALIO home"><img src="mark.svg" alt="" width="30" height="30"><span>DALIO</span></a>
+  <nav class="mast-nav" aria-label="Page sections"><a href="#film">Film</a><a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#maps">Maps</a><a href="#accuracy">Results</a></nav>
+  <div class="nav-utilities"><a data-lang-link href="zh.html" lang="zh-CN" hreflang="zh-CN">中文</a></div>
+</div></header>
+<main id="main">
+  <section class="hero"><div class="wrap hero-layout">
+    <div class="intro">
+      <p class="eyebrow"><span class="line"></span> Accepted paper <span class="meta-sep">/</span> IEEE/ASME T-Mech</p>
+      <h1><span class="display">DALIO</span><span class="paper-title">Degeneracy-Aware, Efficient LiDAR-Inertial Odometry with Adaptive Multi-Resolution Mapping</span></h1>
+      <p class="authors">Haoda Zhu<sup>1,*</sup>, Fangcheng Zhu<sup>1,*</sup>, Yuhao Fang<sup>2</sup>, Jiale Han<sup>1</sup>, Yunfan Ren<sup>1</sup>, Siqi Liang<sup>1</sup>, Longji Yin<sup>1</sup>, Jie Mei<sup>2</sup> and Fu Zhang<sup>1,†</sup></p>
+      <p class="affils"><sup>1</sup> The University of Hong Kong<br><sup>2</sup> Harbin Institute of Technology, Shenzhen</p>
+      <p class="notes">* Equal contribution <span>·</span> † Corresponding author</p>
+      <div class="actions"><a class="btn primary" href="media/paper.pdf"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h6.3l3.7 4v11H5zM11 3v4h4M7.5 10h5M7.5 13h4"/></svg>Read the paper</a><a class="btn ghost" href="#maps"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 7 4v8l-7 4-7-4V6zM3.5 6.3l6.5 3.8 6.5-3.8M10 10v7.5"/></svg>Explore MultiMap</a></div>
+    </div>
+    <figure id="film" class="film-panel">
+      <div class="film-label"><span>Project film</span><span>05:25 <span>/</span> 1080p</span></div>
+      <div class="film-screen"><video id="project-film" controls playsinline preload="none" width="1920" height="1080" poster="media/film-poster.jpg" aria-label="DALIO supplementary project video, no sound"><source src="media/dalio-film.mp4" type="video/mp4">Your browser cannot play this video.</video>
+        <button id="film-play" class="play" aria-label="Play the DALIO project film" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg></button></div>
+    </figure>
+    <details id="abstract" class="abstract-note" open>
+      <summary><h2>Paper abstract</h2></summary>
+      <p>This paper presents DALIO, a novel LiDAR-inertial odometry (LIO) framework that achieves robust localization across diverse environments while significantly reducing computational complexity. Embodying a “Computation on Demand” philosophy, DALIO introduces a degeneracy-aware batch selection module that dynamically adjusts the number of points used for scan registration based on real-time assessments of environmental constraints. Additionally, DALIO incorporates a degeneracy suppression method that filters out the influence of measurements along poorly constrained directions, thereby preventing noise in degenerate modes from corrupting the state update and improving overall estimation stability. Furthermore, DALIO employs MultiMap, an adaptive multi-resolution mapping strategy that preserves essential raw point data while selectively refining map resolution, effectively reducing memory usage and enabling accurate localization in both large-scale and small-scale settings. Extensive evaluations on public datasets, multiple UAV platforms, and resource-constrained embedded systems show that DALIO maintains competitive localization accuracy while reducing runtime by up to 68% compared with FAST-LIO2 and preserving real-time performance across diverse hardware platforms.</p>
+    </details>
+  </div></section>
+
+  <section id="method" class="method band"><div class="wrap">
+    <div class="section-top"><div><p class="eyebrow">Method</p><h2>Computation on demand</h2></div>
+      <p>How many points does a pose update really need? DALIO answers from the geometry of the current scan. Registration can stop early, while the map still receives observations from the whole scan.</p></div>
+    <figure class="paper-figure method-figure"><a href="media/method.webp" aria-label="Open the full-resolution system diagram"><img src="media/method.webp" alt="System diagram connecting IMU propagation, LiDAR batch selection, state update and the MultiMap octree" loading="lazy" width="2050" height="832"></a></figure>
+    <div class="method-steps">
+      <article><h3>Choose enough points</h3><p>Process undistorted scan points in batches. Stop registration once the accumulated measurements constrain the pose sufficiently.</p></article>
+      <article><h3>Protect weak directions</h3><p>If all batches have been used and degeneracy persists, suppress LiDAR corrections along poorly observed directions.</p></article>
+      <article><h3>Refine where needed</h3><p>Keep a representative observed point where a coarse voxel is sufficient. Subdivide non-planar regions to retain finer geometry.</p></article>
+    </div>
+  </div></section>
+
+  <section class="overview wrap" aria-labelledby="overview-title">
+    <div class="section-top heading-only"><div><p class="eyebrow">Field experiment</p><h2 id="overview-title">Across the indoor–outdoor boundary</h2></div></div>
+    <figure class="paper-figure flight-figure">
+      <a href="media/flight.webp" aria-label="Open the full-resolution indoor–outdoor flight figure"><img src="media/flight.webp" alt="Paper teaser: velocity-coloured outdoor flight trajectory, indoor view and multiresolution point map" loading="lazy" width="2050" height="1700"></a>
+      <figcaption>
+        <p class="flight-story">On a 181&nbsp;m flight reaching 5&nbsp;m/s, the UAV leaves the building, completes an outdoor loop and returns indoors. The map preserves fine indoor structure without storing the entire outdoor scene at the finest scale.</p>
+        <p class="flight-key"><span>Paper figure</span> The trajectory is coloured by speed. In the MultiMap inset, green denotes lower resolution and red denotes higher resolution.</p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section id="maps" class="atlas wrap">
+    <div class="section-top heading-only"><div><p class="eyebrow">Interactive maps</p><h2>Explore MultiMap</h2></div></div>
+    <div id="explorer" class="explorer">
+      <div class="atlas-top"><div class="select-wrap"><label for="scene">Recording</label><select id="scene" disabled><option>Loading recordings…</option></select></div>
+        <div class="atlas-actions"><a href="#accuracy">Accuracy tables</a><div class="view-buttons" aria-label="Camera controls"><button type="button" id="oblique" aria-pressed="true">Oblique</button><button type="button" id="overhead" aria-pressed="false">Top</button></div></div></div>
+      <div class="viewport"><canvas id="cloud" tabindex="0" aria-label="Interactive 3D point map. Drag or use arrow keys to orbit, plus or minus to zoom, R to reset."></canvas>
+        <div class="viewport-key" aria-hidden="true"><span></span><b>Octree depth</b></div>
+        <div id="load-state" role="status" class="load-state">Loading the local point set…</div>
+        <div class="camera-tools"><button type="button" id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button><button type="button" id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button><button type="button" id="reset" title="Reset view" aria-label="Reset view"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4v4h4M4.6 7.2a6.1 6.1 0 1 1-.1 5"/></svg></button></div>
+      </div>
+      <div class="atlas-controls"><div class="layer-group" id="layers"><span class="control-title">Show layers</span>
+        <label class="layer l0"><input type="checkbox" data-level="0" checked><span class="swatch"></span><span class="edge">0.5 m</span></label>
+        <label class="layer l1"><input type="checkbox" data-level="1" checked><span class="swatch"></span><span class="edge">0.25 m</span></label>
+        <label class="layer l2"><input type="checkbox" data-level="2" checked><span class="swatch"></span><span class="edge">0.125 m</span></label>
+        </div><span class="hint">Drag to orbit · Shift-drag to pan · Scroll or pinch to zoom</span></div>
+    </div>
+    <section id="accuracy" class="accuracy-card" aria-labelledby="accuracy-title">
+      <header class="accuracy-header">
+        <div><p class="eyebrow">Benchmark results</p><h3 id="accuracy-title">Odometry accuracy</h3></div>
+        <a class="accuracy-source" href="media/paper.pdf#page=7">Tables II–III in the paper</a>
+      </header>
+      <p class="accuracy-intro">Ground-truth trajectories are evaluated by root-mean-square error (RMSE). For sequences that return to their starting point, the paper reports end-to-end error (E2E). Both are in metres; lower is better.</p>
+      <div id="accuracy-switch" class="accuracy-switch" aria-label="Accuracy metric" hidden>
+        <button type="button" id="metric-tab-rmse" data-metric-tab="rmse" aria-controls="accuracy-rmse">Ground truth <span>RMSE</span></button>
+        <button type="button" id="metric-tab-e2e" data-metric-tab="e2e" aria-controls="accuracy-e2e">Loop return <span>E2E</span></button>
+      </div>
+      <!-- accuracy-tables:start -->
+      <div class="metric-panel" id="accuracy-rmse" data-metric="rmse">
+        <h4 id="accuracy-rmse-heading">Ground-truth trajectories · RMSE (m)</h4>
+        <div class="accuracy-scroll" tabindex="0" role="region" aria-labelledby="accuracy-rmse-heading">
+          <table class="accuracy-table">
+            <caption class="visually-hidden">Manuscript Table II: Ground-truth trajectories · RMSE (m). Lower is better.</caption>
+            <thead><tr><th scope="col">Sequence</th><th scope="col" class="primary-method">DALIO</th><th scope="col">DALIO<sup>†</sup></th><th scope="col">DALIO<sup>*</sup></th><th scope="col">FAST-LIO2</th><th scope="col">FASTER-LIO</th><th scope="col">VoxelMap</th><th scope="col">DLIO</th><th scope="col">DALI-SLAM</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">nclt1</th><td class="primary-method">1.34</td><td>1.35</td><td>1.31</td><td><strong>1.21</strong></td><td>1.24</td><td>1.28</td><td>1.26</td><td>1.48</td></tr>
+              <tr><th scope="row">nclt2</th><td class="primary-method">1.56</td><td>1.55</td><td>1.61</td><td>2.03</td><td>1.59</td><td><strong>1.44</strong></td><td>1.62</td><td>2.14</td></tr>
+              <tr><th scope="row">nclt3</th><td class="primary-method">0.98</td><td>1.00</td><td>0.92</td><td><strong>0.88</strong></td><td>1.03</td><td>0.99</td><td>1.05</td><td>0.94</td></tr>
+              <tr><th scope="row">ncd1</th><td class="primary-method">0.33</td><td>0.34</td><td>0.32</td><td>0.35</td><td>0.32</td><td><strong>0.31</strong></td><td>0.33</td><td>0.37</td></tr>
+              <tr><th scope="row">ncd2</th><td class="primary-method">0.32</td><td>0.31</td><td>0.35</td><td>0.35</td><td>0.38</td><td>0.33</td><td><strong>0.30</strong></td><td>0.36</td></tr>
+              <tr><th scope="row">ncd3</th><td class="primary-method">0.12</td><td>0.12</td><td>0.12</td><td><strong>0.11</strong></td><td>0.14</td><td>0.13</td><td>0.13</td><td>0.12</td></tr>
+              <tr><th scope="row">m3o1</th><td class="primary-method"><strong>0.20</strong></td><td>0.21</td><td>0.21</td><td>0.23</td><td>0.25</td><td>0.24</td><td>0.26</td><td>0.22</td></tr>
+              <tr><th scope="row">m3o2</th><td class="primary-method"><strong>0.19</strong></td><td>0.20</td><td><strong>0.19</strong></td><td>0.30</td><td>0.20</td><td>0.94</td><td>0.21</td><td>0.28</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="metric-panel" id="accuracy-e2e" data-metric="e2e">
+        <h4 id="accuracy-e2e-heading">Loop-return sequences · E2E (m)</h4>
+        <div class="accuracy-scroll" tabindex="0" role="region" aria-labelledby="accuracy-e2e-heading">
+          <table class="accuracy-table">
+            <caption class="visually-hidden">Manuscript Table III: Loop-return sequences · E2E (m). Lower is better.</caption>
+            <thead><tr><th scope="col">Sequence</th><th scope="col" class="primary-method">DALIO</th><th scope="col">DALIO<sup>†</sup></th><th scope="col">DALIO<sup>*</sup></th><th scope="col">FAST-LIO2</th><th scope="col">FASTER-LIO</th><th scope="col">VoxelMap</th><th scope="col">DLIO</th><th scope="col">DALI-SLAM</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">hku1</th><td class="primary-method">0.04</td><td>0.04</td><td>0.04</td><td><strong>0.03</strong></td><td>0.11</td><td>0.04</td><td>0.12</td><td>0.05</td></tr>
+              <tr><th scope="row">hku2</th><td class="primary-method">0.04</td><td>0.06</td><td><strong>0.03</strong></td><td>0.04</td><td>0.04</td><td>0.04</td><td>0.05</td><td>0.09</td></tr>
+              <tr><th scope="row">hku3</th><td class="primary-method"><strong>0.03</strong></td><td><strong>0.03</strong></td><td>0.04</td><td>1.96</td><td>2.05</td><td>0.10</td><td>2.12</td><td>1.88</td></tr>
+              <tr><th scope="row">ust1</th><td class="primary-method"><strong>0.65</strong></td><td>0.91</td><td>0.93</td><td>3.38</td><td>3.87</td><td>4.91</td><td>3.96</td><td>3.52</td></tr>
+              <tr><th scope="row">ust2</th><td class="primary-method">1.32</td><td>1.17</td><td><strong>0.97</strong></td><td>2.93</td><td>2.77</td><td>3.44</td><td>2.84</td><td>3.10</td></tr>
+              <tr><th scope="row">ust3</th><td class="primary-method">0.04</td><td>0.05</td><td><strong>0.02</strong></td><td>0.03</td><td>0.04</td><td>0.04</td><td>0.05</td><td>0.04</td></tr>
+              <tr><th scope="row">m3i1</th><td class="primary-method"><strong>0.04</strong></td><td>0.56</td><td>0.54</td><td>1.03</td><td>0.98</td><td>3.75</td><td>1.04</td><td>1.08</td></tr>
+              <tr><th scope="row">m3i2</th><td class="primary-method"><strong>0.45</strong></td><td>1.86</td><td><strong>0.45</strong></td><td>3.43</td><td>5.53</td><td>–</td><td>0.68</td><td>1.36</td></tr>
+              <tr><th scope="row">m3i3</th><td class="primary-method">0.05</td><td>0.06</td><td>0.04</td><td><strong>0.03</strong></td><td>0.04</td><td>0.04</td><td>0.05</td><td>0.04</td></tr>
+              <tr><th scope="row">dege1</th><td class="primary-method"><strong>1.01</strong></td><td>1.58</td><td>7.35</td><td>3.13</td><td>2.28</td><td>12.85</td><td>7.41</td><td>7.02</td></tr>
+              <tr><th scope="row">dege2</th><td class="primary-method"><strong>1.32</strong></td><td>8.12</td><td>5.86</td><td>6.45</td><td>15.82</td><td>–</td><td>5.90</td><td>6.58</td></tr>
+              <tr><th scope="row">self1</th><td class="primary-method"><strong>0.06</strong></td><td>0.09</td><td>0.08</td><td>0.11</td><td>0.07</td><td>0.09</td><td>0.08</td><td>0.12</td></tr>
+              <tr><th scope="row">self2</th><td class="primary-method"><strong>0.04</strong></td><td>2.62</td><td>0.16</td><td>9.51</td><td>–</td><td>–</td><td>–</td><td>9.51</td></tr>
+              <tr><th scope="row">self3</th><td class="primary-method">0.02</td><td>0.60</td><td>0.05</td><td>1.09</td><td>0.29</td><td><strong>0.01</strong></td><td>0.11</td><td>1.03</td></tr>
+              <tr><th scope="row">self4</th><td class="primary-method">0.03</td><td>0.17</td><td><strong>0.02</strong></td><td>0.27</td><td>0.44</td><td>4.35</td><td>0.06</td><td>0.56</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- accuracy-tables:end -->
+      <div class="accuracy-notes">
+        <p><strong>Bold</strong> marks the lowest error for each sequence, including ties. A dash (–) means no result is reported.</p>
+        <p>DALIO<sup>†</sup> disables degeneracy suppression; DALIO<sup>*</sup> uses all points for registration. DALI-SLAM is evaluated using its front-end odometry module.</p>
+      </div>
+    </section>
+    <noscript><style>.explorer{display:none}</style><p>Enable JavaScript to interact with the maps.</p></noscript>
+  </section>
+
+  <section id="results" class="results band"><div class="wrap">
+    <div class="section-top heading-only"><div><p class="eyebrow">Reported experiments</p><h2>Where the map spends its detail</h2></div></div>
+    <div class="result-layout"><figure class="paper-figure result-fig"><a href="media/map-comparison.webp" aria-label="Open the full-resolution map ablation figure"><img src="media/map-comparison.webp" alt="Paper comparison: accumulated scans, MultiMap, fixed coarse and fixed fine ikd-Trees, and map-size growth" width="2050" height="1723" loading="lazy"></a><figcaption><span>Paper figure</span> The upper-right panel is MultiMap. The accumulated scan at upper left is not the map exported by the estimator.</figcaption></figure>
+    <div class="result-text"><h3>Map-only ablation</h3><p>Average loop-return error (m) / frame runtime (ms). Lower values are better for both metrics.</p>
+    <div class="table-scroll"><table><caption class="visually-hidden">Manuscript Table IV: average E2E error and runtime</caption><thead><tr><th>Map backend</th><th>HKU</th><th>UST</th><th>Self</th></tr></thead><tbody>
+      <tr class="ours"><th>MultiMap</th><td>0.04 / 12.50</td><td>0.64 / 14.63</td><td>0.08 / 18.10</td></tr><tr><th>ikd-Tree High</th><td>0.44 / 16.22</td><td>2.21 / 19.17</td><td>0.64 / 22.17</td></tr><tr><th>ikd-Tree Low</th><td>0.70 / 12.56</td><td>2.12 / 16.46</td><td>2.75 / 20.56</td></tr></tbody></table></div>
+      <p class="table-note">Fixed-resolution baselines: High, 0.125&nbsp;m; Low, 0.5&nbsp;m. Full dataset metrics and platform details are in the <a href="media/paper.pdf">paper</a>.</p>
+    </div></div>
+    <div class="forest-block"><div><p class="eyebrow">Separate field experiment</p><h3>Forest flight</h3><p>In a separate high-speed trial, the aircraft completed two loops between five waypoints and reached 8&nbsp;m/s.</p></div>
+      <a href="media/forest.webp" aria-label="Open the full-resolution forest flight experiment"><img src="media/forest.webp" alt="Forest flight point cloud, velocity-coloured trajectory, planning displays and recorded flight views" loading="lazy" width="2050" height="824"></a></div>
+  </div></section>
+  <footer class="wrap footer"><div><p class="eyebrow">Research project</p><strong>DALIO</strong><p>IEEE/ASME Transactions on Mechatronics · Accepted manuscript</p></div><div class="footer-links"><a href="media/paper.pdf">Paper PDF</a><a href="#main">Back to top</a></div></footer>
+</main>
+</body></html>
